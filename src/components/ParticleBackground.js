@@ -43,7 +43,7 @@ const ParticleBackground = ({
       rotation: Math.random() * 360
     }));
     setParticles(initialParticles);
-  }, [particleCount, colorScheme]);
+  }, [particleCount, colorScheme, colorSchemes]);
 
   // Animation frame for smooth movement
   useEffect(() => {
