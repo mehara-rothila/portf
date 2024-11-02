@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 const ParticleBackground = ({ particleCount = 30, colorScheme = 'default' }) => {
   const [particles, setParticles] = useState([]);
-  const [mousePos, setMousePos] = useState({ x: null, y: null });
+  const [interactionPos, setInteractionPos] = useState({ x: null, y: null });
+  const [isTouching, setIsTouching] = useState(false);
 
   // Color schemes moved to a memoized object to prevent unnecessary re-renders
   const colorSchemes = useMemo(() => ({
@@ -51,38 +52,44 @@ const ParticleBackground = ({ particleCount = 30, colorScheme = 'default' }) => 
         prevParticles.map(particle => {
           let { x, y, vx, vy, baseX, baseY } = particle;
           
-          // Apply mouse repulsion if mouse is present
-          if (mousePos.x !== null) {
-            const dx = mousePos.x - x;
-            const dy = mousePos.y - y;
+          // Apply repulsion if interaction is present
+          if (interactionPos.x !== null) {
+            const dx = interactionPos.x - x;
+            const dy = interactionPos.y - y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            if (distance < 30) { // Repulsion radius
-              const force = (30 - distance) / 30;
-              vx -= (dx / distance) * force * 2;
-              vy -= (dy / distance) * force * 2;
+            // Increased repulsion radius and strength for touch
+            const repulsionRadius = isTouching ? 40 : 30;
+            const repulsionStrength = isTouching ? 3 : 2;
+            
+            if (distance < repulsionRadius) {
+              const force = (repulsionRadius - distance) / repulsionRadius;
+              vx -= (dx / distance) * force * repulsionStrength;
+              vy -= (dy / distance) * force * repulsionStrength;
             }
           }
 
-          // Spring force towards base position
+          // Spring force towards base position with adjusted strength
+          const springStrength = isTouching ? 0.01 : 0.02; // Softer return when touching
           const springX = baseX - x;
           const springY = baseY - y;
-          vx += springX * 0.02;
-          vy += springY * 0.02;
+          vx += springX * springStrength;
+          vy += springY * springStrength;
 
           // Apply friction
-          vx *= 0.95;
-          vy *= 0.95;
+          const friction = isTouching ? 0.97 : 0.95; // Less friction when touching
+          vx *= friction;
+          vy *= friction;
 
           // Update position
           x += vx;
           y += vy;
 
-          // Boundary checking
-          if (x < 0) { x = 0; vx *= -0.5; }
-          if (x > 100) { x = 100; vx *= -0.5; }
-          if (y < 0) { y = 0; vy *= -0.5; }
-          if (y > 100) { y = 100; vy *= -0.5; }
+          // Boundary checking with smoother bounce
+          if (x < 0) { x = 0; vx *= -0.7; }
+          if (x > 100) { x = 100; vx *= -0.7; }
+          if (y < 0) { y = 0; vy *= -0.7; }
+          if (y > 100) { y = 100; vy *= -0.7; }
 
           return {
             ...particle,
@@ -90,7 +97,7 @@ const ParticleBackground = ({ particleCount = 30, colorScheme = 'default' }) => 
             y,
             vx,
             vy,
-            rotation: particle.rotation + (Math.abs(vx) + Math.abs(vy)) * 2
+            rotation: particle.rotation + (Math.abs(vx) + Math.abs(vy)) * (isTouching ? 3 : 2)
           };
         })
       );
@@ -103,18 +110,47 @@ const ParticleBackground = ({ particleCount = 30, colorScheme = 'default' }) => 
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [mousePos]);
+  }, [interactionPos, isTouching]);
 
-  // Handle mouse movement
-  const handleMouseMove = useCallback((e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setMousePos({ x, y });
+  // Convert event coordinates to percentage positions
+  const getRelativePosition = useCallback((clientX, clientY, rect) => {
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    const y = ((clientY - rect.top) / rect.height) * 100;
+    return { x, y };
   }, []);
 
+  // Mouse event handlers
+  const handleMouseMove = useCallback((e) => {
+    if (isTouching) return; // Ignore mouse events while touching
+    const rect = e.currentTarget.getBoundingClientRect();
+    setInteractionPos(getRelativePosition(e.clientX, e.clientY, rect));
+  }, [getRelativePosition, isTouching]);
+
   const handleMouseLeave = useCallback(() => {
-    setMousePos({ x: null, y: null });
+    if (!isTouching) {
+      setInteractionPos({ x: null, y: null });
+    }
+  }, [isTouching]);
+
+  // Touch event handlers
+  const handleTouchStart = useCallback((e) => {
+    e.preventDefault();
+    setIsTouching(true);
+    const rect = e.currentTarget.getBoundingClientRect();
+    const touch = e.touches[0];
+    setInteractionPos(getRelativePosition(touch.clientX, touch.clientY, rect));
+  }, [getRelativePosition]);
+
+  const handleTouchMove = useCallback((e) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const touch = e.touches[0];
+    setInteractionPos(getRelativePosition(touch.clientX, touch.clientY, rect));
+  }, [getRelativePosition]);
+
+  const handleTouchEnd = useCallback(() => {
+    setIsTouching(false);
+    setInteractionPos({ x: null, y: null });
   }, []);
 
   // Custom Triangle component
@@ -133,6 +169,10 @@ const ParticleBackground = ({ particleCount = 30, colorScheme = 'default' }) => 
       className={`absolute inset-0 overflow-hidden bg-gradient-to-br ${gradient}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
     >
       {particles.map((particle) => (
         <div
