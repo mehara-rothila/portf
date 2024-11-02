@@ -1,13 +1,262 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Import fonts first */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+/* Then Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Enhanced Cursor Styles */
+.cursor-dot,
+.cursor-ring,
+.cursor-glow,
+.cursor-trail {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: opacity 0.3s ease-in-out;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Main dot */
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle at center, #fff, #bbb);
+  border-radius: 50%;
+  transition: width 0.2s ease-in-out, height 0.2s ease-in-out, transform 0.05s ease-out;
+  mix-blend-mode: difference;
+  will-change: transform, width, height;
+  animation: cursorPulse 1s infinite;
+}
+
+/* Ring around the cursor */
+.cursor-ring {
+  width: 35px;
+  height: 35px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transition: all 0.15s ease-out;
+  will-change: transform, border-color;
+  mix-blend-mode: difference;
+  animation: cursorRotate 2s linear infinite;
+}
+
+/* Glow effect */
+.cursor-glow {
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  border-radius: 50%;
+  opacity: 0.6;
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  will-change: transform, opacity;
+  animation: cursorGlowPulse 2s infinite;
+}
+
+/* Cursor trail effect */
+.cursor-trail {
+  width: 8px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  mix-blend-mode: difference;
+  opacity: 0.5;
+  animation: cursorTrail 0.5s forwards;
+}
+
+/* Hover states */
+.cursor-hovering {
+  width: 60px;
+  height: 60px;
+  border-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.1);
+  animation: cursorHoverPulse 1s infinite;
+}
+
+.cursor-hovering ~ .cursor-glow {
+  transform: translate(-50%, -50%) scale(2);
+  opacity: 0.8;
+}
+
+.cursor-hovering ~ .cursor-dot {
+  background-color: #fff;
+}
+
+/* Click states */
+.cursor-clicking {
+  width: 20px;
+  height: 20px;
+  border-width: 3px;
+  transform: translate(-50%, -50%) scale(0.8);
+  animation: none;
+}
+
+.cursor-clicking ~ .cursor-dot {
+  transform: translate(-50%, -50%) scale(0.6);
+  background-color: #ff0000;
+}
+
+.cursor-clicking ~ .cursor-glow {
+  transform: translate(-50%, -50%) scale(1.2);
+  opacity: 0.9;
+  background: radial-gradient(
+    circle,
+    rgba(255, 0, 0, 0.3) 0%,
+    rgba(255, 0, 0, 0) 80%
+  );
+}
+
+/* Rest of your styles */
+/* Custom Selection Color */
+::selection {
+  background-color: theme('colors.primary.500 / 20%');
+  color: theme('colors.primary.500');
+}
+
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: theme('colors.gray.100');
+  @apply dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  background: theme('colors.primary.500 / 50%');
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.primary.600 / 50%');
+}
+
+/* Glitch Text Effect */
+.glitch-text {
+  position: relative;
+  text-shadow: 
+    0.05em 0 0 theme('colors.primary.500 / 75%'),
+    -0.025em -0.05em 0 theme('colors.secondary.500 / 75%'),
+    0.025em 0.05em 0 theme('colors.blue.500 / 75%');
+  animation: glitch 500ms infinite;
+}
+
+/* Animations */
+@keyframes cursorPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+@keyframes cursorGlowPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+@keyframes cursorRotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes cursorHoverPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes cursorTrail {
+  0% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+}
+
+@keyframes glitch {
+  2%, 64% {
+    transform: translate(2px,0) skew(0deg);
+  }
+  4%, 60% {
+    transform: translate(-2px,0) skew(0deg);
+  }
+  62% {
+    transform: translate(0,0) skew(5deg);
+  }
+}
+
+/* Interactive elements */
+a:hover,
+button:hover,
+[role="button"]:hover {
+  cursor: none;
+}
+
+/* Hide default cursor */
+* {
+  cursor: none !important;
+}
+
+/* Smooth movements */
+@media (prefers-reduced-motion: no-preference) {
+  .cursor-dot {
+    transition: transform 0.05s ease-out, width 0.2s ease-out, height 0.2s ease-out;
+  }
+  
+  .cursor-ring {
+    transition: transform 0.15s ease-out, width 0.2s ease-out, height 0.2s ease-out, border-color 0.2s ease-out;
+  }
+  
+  .cursor-glow {
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+  }
+}
+
+/* Cursor Trail Elements */
+.cursor-trail {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  animation: cursorTrail 0.5s forwards;
 }

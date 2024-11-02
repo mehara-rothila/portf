@@ -1,23 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from 'react';
+import Portfolio from './components/Portfolio';
+import DotCursor from './components/DotCursor';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App relative min-h-screen bg-gray-50 dark:bg-gray-900 selection:bg-primary-500/20 selection:text-primary-500">
+      <DotCursor />
+      <Portfolio />
     </div>
   );
 }
