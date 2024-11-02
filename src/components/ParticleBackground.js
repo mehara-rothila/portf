@@ -1,14 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
-const ParticleBackground = ({
-  particleCount = 30,
-  colorScheme = 'default',
-}) => {
+const ParticleBackground = ({ particleCount = 30, colorScheme = 'default' }) => {
   const [particles, setParticles] = useState([]);
   const [mousePos, setMousePos] = useState({ x: null, y: null });
 
-  // Color schemes
-  const colorSchemes = {
+  // Color schemes moved to a memoized object to prevent unnecessary re-renders
+  const colorSchemes = useMemo(() => ({
     default: {
       gradient: 'from-primary-500/10 via-transparent to-secondary-500/10',
       particleColors: ['bg-primary-500/20', 'bg-secondary-500/20']
@@ -25,7 +22,7 @@ const ParticleBackground = ({
       gradient: 'from-orange-500/10 via-red-500/10 to-yellow-500/10',
       particleColors: ['bg-orange-500/20', 'bg-red-500/20', 'bg-yellow-500/20']
     }
-  };
+  }), []);
 
   // Initialize particles
   useEffect(() => {
