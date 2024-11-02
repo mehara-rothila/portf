@@ -1,4 +1,3 @@
-// src/components/DotCursor.js
 import React, { useEffect, useState, useCallback } from 'react';
 
 const DotCursor = () => {
@@ -7,6 +6,27 @@ const DotCursor = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [trailElements, setTrailElements] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      const isTouchDevice = (
+        'ontouchstart' in window || 
+        navigator.maxTouchPoints > 0 || 
+        window.matchMedia('(hover: none)').matches ||
+        window.innerWidth <= 768
+      );
+      setIsMobile(isTouchDevice);
+    };
+
+    // Check initially
+    checkMobile();
+
+    // Check on resize
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleMouseMove = useCallback((e) => {
     requestAnimationFrame(() => {
@@ -14,7 +34,7 @@ const DotCursor = () => {
       
       // Add a new trail element
       const newTrail = { x: e.clientX, y: e.clientY, id: Math.random() };
-      setTrailElements(prev => [...prev.slice(-10), newTrail]); // Keep last 10 trail elements
+      setTrailElements(prev => [...prev.slice(-10), newTrail]);
     });
     if (!visible) setVisible(true);
   }, [visible]);
@@ -25,6 +45,11 @@ const DotCursor = () => {
   const handleMouseEnter = () => setVisible(true);
 
   useEffect(() => {
+    // Only add event listeners if not on mobile
+    if (isMobile) {
+      return;
+    }
+
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
@@ -53,9 +78,10 @@ const DotCursor = () => {
         element.removeEventListener('mouseleave', handleElementLeave);
       });
     };
-  }, [handleMouseMove]);
+  }, [handleMouseMove, isMobile]);
 
-  if (!visible) return null;
+  // Don't render anything on mobile devices
+  if (isMobile || !visible) return null;
 
   return (
     <>
