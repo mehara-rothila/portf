@@ -1,8 +1,7 @@
 // src/components/Portfolio.js
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Github, Linkedin, Mail, ExternalLink, ChevronDown } from 'lucide-react';
-import { SmallModernLogo } from './Logo';
-import HeroLogo from './HeroLogo';
+// Removed SmallModernLogo and HeroLogo as they are not used in the code
 import ThemeToggle from './ThemeToggle';
 import ParticleBackground from './ParticleBackground';
 
@@ -34,22 +33,6 @@ const Portfolio = () => {
       category: 'Soft Skills', 
       items: ['Problem Solving', 'Team Leadership', 'Communication', 'Project Management'] 
     }
-  ];
-
-  // Projects data
-  const projects = [
-    {
-      title: 'Project 1',
-      description: 'Description of your first major project. Replace this with your actual project details.',
-      technologies: ['React', 'Node.js', 'MongoDB'],
-      link: '#'
-    },
-    {
-      title: 'Project 2',
-      description: 'Description of your second major project. Replace this with your actual project details.',
-      technologies: ['Python', 'Django', 'PostgreSQL'],
-      link: '#'
-    },
   ];
 
   useEffect(() => {
@@ -203,116 +186,52 @@ const Portfolio = () => {
                 </ul>
               </div>
             ))}
-
-</div>
+          </div>
         </div>
       </section>
-      
+
       {/* Projects Section */}
-<section id="projects" className="py-20">
-  <div className="max-w-7xl mx-auto px-4">
-    <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-      Projects
-    </h2>
-    <div className="grid md:grid-cols-2 gap-8">
-      <div className="group backdrop-blur-md bg-white/90 dark:bg-gray-800/90 p-6 rounded-xl shadow-lg dark:shadow-gray-800 hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-xl font-semibold text-primary-600 dark:text-primary-400">
-            Project 1 - Quiz App
-          </h3>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            Sep 2024 - Oct 2024
-          </span>
+      <section id="projects" className="py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+            Projects
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Example project card */}
+            <div className="group backdrop-blur-md bg-white/90 dark:bg-gray-800/90 p-6 rounded-xl shadow-lg dark:shadow-gray-800 hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="text-xl font-semibold text-primary-600 dark:text-primary-400">
+                  Project 1 - Quiz App
+                </h3>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Sep 2024 - Oct 2024
+                </span>
+              </div>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                A dynamic, interactive platform that tests users' knowledge across multiple programming languages such as JavaScript, Python, React, SQL, C, and Java.
+              </p>
+              <div className="flex space-x-4">
+                <a
+                  href="https://github.com/mehara-rothila/Quiz-App"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
+                >
+                  <Github size={16} className="mr-1" /> View Code
+                </a>
+                <a
+                  href="https://mrr-quiz.netlify.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
+                >
+                  <ExternalLink size={16} className="mr-1" /> Live Demo
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
-          A dynamic, interactive platform that tests users' knowledge across multiple programming languages such as JavaScript, Python, React, SQL, C, and Java. Features a comprehensive system for tracking progress and encouraging competition.
-        </p>
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-            Key Features:
-          </h4>
-          <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 mb-4">
-            <li className="flex items-start">
-              <span className="mr-2 text-primary-500">•</span>
-              <span>Timed quizzes with multiple difficulty levels</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 text-primary-500">•</span>
-              <span>Real-time score tracking and performance analytics</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 text-primary-500">•</span>
-              <span>Achievement system with unlockable badges</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 text-primary-500">•</span>
-              <span>Interactive leaderboard system</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 text-primary-500">•</span>
-              <span>Multi-language programming quizzes</span>
-            </li>
-          </ul>
-        </div>
-        <div className="flex flex-wrap gap-2 mb-4">
-          <span className="bg-primary-100 dark:bg-primary-900/50 text-primary-800 dark:text-primary-100 px-3 py-1 rounded-full text-sm hover:bg-primary-200 dark:hover:bg-primary-800 transition-colors duration-200">
-            React.js
-          </span>
-          <span className="bg-primary-100 dark:bg-primary-900/50 text-primary-800 dark:text-primary-100 px-3 py-1 rounded-full text-sm hover:bg-primary-200 dark:hover:bg-primary-800 transition-colors duration-200">
-            JavaScript
-          </span>
-          <span className="bg-primary-100 dark:bg-primary-900/50 text-primary-800 dark:text-primary-100 px-3 py-1 rounded-full text-sm hover:bg-primary-200 dark:hover:bg-primary-800 transition-colors duration-200">
-            Git
-          </span>
-          <span className="bg-primary-100 dark:bg-primary-900/50 text-primary-800 dark:text-primary-100 px-3 py-1 rounded-full text-sm hover:bg-primary-200 dark:hover:bg-primary-800 transition-colors duration-200">
-            GitHub
-          </span>
-          <span className="bg-primary-100 dark:bg-primary-900/50 text-primary-800 dark:text-primary-100 px-3 py-1 rounded-full text-sm hover:bg-primary-200 dark:hover:bg-primary-800 transition-colors duration-200">
-            Netlify
-          </span>
-        </div>
-        <div className="flex space-x-4">
-          <a
-            href="https://github.com/mehara-rothila/Quiz-App"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
-          >
-            <Github size={16} className="mr-1" /> View Code
-          </a>
-          <a
-            href="https://mrr-quiz.netlify.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
-          >
-            <ExternalLink size={16} className="mr-1" /> Live Demo
-          </a>
-        </div>
-      </div>
-      
-      <div className="group backdrop-blur-md bg-white/90 dark:bg-gray-800/90 p-6 rounded-xl shadow-lg dark:shadow-gray-800 hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
-        <h3 className="text-xl font-semibold mb-3 text-primary-600 dark:text-primary-400">
-          Project 2
-        </h3>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
-          Coming Soon...
-        </p>
-        <div className="flex flex-wrap gap-2 mb-4">
-          <span className="bg-primary-100 dark:bg-primary-900/50 text-primary-800 dark:text-primary-100 px-3 py-1 rounded-full text-sm hover:bg-primary-200 dark:hover:bg-primary-800 transition-colors duration-200">
-            Coming Soon
-          </span>
-        </div>
-        <a
-          href="#"
-          className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
-        >
-          View Project <ExternalLink size={16} className="ml-1" />
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* Contact Section */}
       <section id="contact" className="py-20 relative overflow-hidden">
