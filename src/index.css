@@ -10,7 +10,8 @@
 .cursor-dot,
 .cursor-ring,
 .cursor-glow,
-.cursor-trail {
+.cursor-trail,
+.cursor-bubble {
   pointer-events: none;
   position: fixed;
   top: 0;
@@ -20,14 +21,26 @@
   transition: opacity 0.3s ease-in-out;
 }
 
+/* Bubble cursor styles */
+.cursor-bubble {
+  pointer-events: none;
+  position: fixed;
+  border-radius: 50%;
+  background-color: rgba(56, 189, 248, 0.3); /* sky-400 with 0.3 opacity */
+  transform: translate(-50%, -50%);
+  z-index: 9998;
+  animation: cursorBubblePing 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
 /* Main dot */
 .cursor-dot {
-  width: 8px;
-  height: 8px;
-  background: radial-gradient(circle at center, #fff, #bbb);
+  width: 16px;
+  height: 16px;
+  background: rgb(56, 189, 248); /* sky-400 */
   border-radius: 50%;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
   transition: width 0.2s ease-in-out, height 0.2s ease-in-out, transform 0.05s ease-out;
-  mix-blend-mode: difference;
+  mix-blend-mode: normal;
   will-change: transform, width, height;
   animation: cursorPulse 1s infinite;
 }
@@ -36,11 +49,11 @@
 .cursor-ring {
   width: 35px;
   height: 35px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(56, 189, 248, 0.5);
   border-radius: 50%;
   transition: all 0.15s ease-out;
   will-change: transform, border-color;
-  mix-blend-mode: difference;
+  mix-blend-mode: normal;
   animation: cursorRotate 2s linear infinite;
 }
 
@@ -50,8 +63,8 @@
   height: 70px;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0) 80%
+    rgba(56, 189, 248, 0.25) 0%,
+    rgba(56, 189, 248, 0) 80%
   );
   border-radius: 50%;
   opacity: 0.6;
@@ -65,19 +78,61 @@
 .cursor-trail {
   width: 8px;
   height: 8px;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(56, 189, 248, 0.3);
   border-radius: 50%;
-  mix-blend-mode: difference;
+  mix-blend-mode: normal;
   opacity: 0.5;
   animation: cursorTrail 0.5s forwards;
+}
+
+/* Link hover states */
+.cursor-dot-link {
+  background: #22c55e !important; /* Change to green when hovering links */
+  transform: translate(-50%, -50%) scale(1.2) !important;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+}
+
+.cursor-ring-link {
+  border-color: rgba(34, 197, 94, 0.5) !important; /* green-500 */
+  width: 45px !important;
+  height: 45px !important;
+  animation: cursorLinkPulse 1s infinite !important;
+}
+
+.cursor-glow-link {
+  background: radial-gradient(
+    circle,
+    rgba(34, 197, 94, 0.25) 0%,
+    rgba(34, 197, 94, 0) 80%
+  ) !important;
+}
+
+.cursor-bubble-link {
+  background-color: rgba(34, 197, 94, 0.3) !important;
+  animation: cursorBubblePingLink 1s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+}
+
+/* Link text indicator */
+.cursor-link-text {
+  position: fixed;
+  transform: translateX(-50%);
+  background-color: rgba(34, 197, 94, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
 }
 
 /* Hover states */
 .cursor-hovering {
   width: 60px;
   height: 60px;
-  border-color: rgba(255, 255, 255, 0.8);
-  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(56, 189, 248, 0.8);
+  background-color: rgba(56, 189, 248, 0.1);
   animation: cursorHoverPulse 1s infinite;
 }
 
@@ -87,7 +142,13 @@
 }
 
 .cursor-hovering ~ .cursor-dot {
-  background-color: #fff;
+  background-color: rgb(56, 189, 248);
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.cursor-hovering ~ .cursor-bubble {
+  animation-duration: 0.8s;
+  background-color: rgba(56, 189, 248, 0.4);
 }
 
 /* Click states */
@@ -101,7 +162,7 @@
 
 .cursor-clicking ~ .cursor-dot {
   transform: translate(-50%, -50%) scale(0.6);
-  background-color: #ff0000;
+  background-color: rgb(56, 189, 248);
 }
 
 .cursor-clicking ~ .cursor-glow {
@@ -109,55 +170,14 @@
   opacity: 0.9;
   background: radial-gradient(
     circle,
-    rgba(255, 0, 0, 0.3) 0%,
-    rgba(255, 0, 0, 0) 80%
+    rgba(56, 189, 248, 0.3) 0%,
+    rgba(56, 189, 248, 0) 80%
   );
 }
 
-/* Rest of your styles */
-/* Custom Selection Color */
-::selection {
-  background-color: theme('colors.primary.500 / 20%');
-  color: theme('colors.primary.500');
-}
-
-/* Base Styles */
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white;
-  font-family: 'Inter', sans-serif;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: theme('colors.gray.100');
-  @apply dark:bg-gray-800;
-}
-
-::-webkit-scrollbar-thumb {
-  background: theme('colors.primary.500 / 50%');
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: theme('colors.primary.600 / 50%');
-}
-
-/* Glitch Text Effect */
-.glitch-text {
-  position: relative;
-  text-shadow: 
-    0.05em 0 0 theme('colors.primary.500 / 75%'),
-    -0.025em -0.05em 0 theme('colors.secondary.500 / 75%'),
-    0.025em 0.05em 0 theme('colors.blue.500 / 75%');
-  animation: glitch 500ms infinite;
+.cursor-clicking ~ .cursor-bubble {
+  animation-duration: 0.5s;
+  background-color: rgba(56, 189, 248, 0.5);
 }
 
 /* Animations */
@@ -210,15 +230,39 @@ body {
   }
 }
 
-@keyframes glitch {
-  2%, 64% {
-    transform: translate(2px,0) skew(0deg);
+@keyframes cursorBubblePing {
+  75%, 100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
   }
-  4%, 60% {
-    transform: translate(-2px,0) skew(0deg);
+}
+
+@keyframes cursorLinkPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    border-color: rgba(34, 197, 94, 0.5);
   }
-  62% {
-    transform: translate(0,0) skew(5deg);
+  50% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(180deg);
+    border-color: rgba(34, 197, 94, 0.8);
+  }
+}
+
+@keyframes cursorBubblePingLink {
+  75%, 100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 }
 
@@ -249,14 +293,20 @@ button:hover,
   }
 }
 
-/* Cursor Trail Elements */
-.cursor-trail {
-  position: fixed;
-  width: 8px;
-  height: 8px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  pointer-events: none;
-  mix-blend-mode: difference;
-  animation: cursorTrail 0.5s forwards;
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .cursor-link-text {
+    background-color: rgba(34, 197, 94, 0.95);
+  }
+}
+
+/* Custom Selection Color */
+::selection {
+  background-color: theme('colors.primary.500 / 20%');
+  color: theme('colors.primary.500');
+}
+
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
 }
