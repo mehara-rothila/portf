@@ -4,9 +4,11 @@ const DotCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [visible, setVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isLink, setIsLink] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [trailElements, setTrailElements] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
+  const [hoverText, setHoverText] = useState('');
 
   // Check if device is mobile
   useEffect(() => {
@@ -57,8 +59,23 @@ const DotCursor = () => {
     document.addEventListener('mouseenter', handleMouseEnter);
 
     // Handle hoverable elements
-    const handleElementHover = () => setIsHovering(true);
-    const handleElementLeave = () => setIsHovering(false);
+    const handleElementHover = (e) => {
+      setIsHovering(true);
+      // Check if the hovered element is a link or has a link parent
+      const link = e.target.closest('a');
+      setIsLink(!!link);
+      if (link) {
+        // Get link text or href for display
+        const text = link.textContent?.trim() || link.getAttribute('aria-label') || 'Link';
+        setHoverText(text.length > 20 ? text.substring(0, 20) + '...' : text);
+      }
+    };
+    
+    const handleElementLeave = () => {
+      setIsHovering(false);
+      setIsLink(false);
+      setHoverText('');
+    };
 
     const hoverableElements = document.querySelectorAll('a, button, input, [role="button"]');
     hoverableElements.forEach(element => {
@@ -97,9 +114,25 @@ const DotCursor = () => {
         />
       ))}
       
+      {/* Bubble cursors */}
+      {[...Array(6)].map((_, i) => (
+        <div
+          key={`bubble-${i}`}
+          className={`cursor-bubble ${isLink ? 'cursor-bubble-link' : ''}`}
+          style={{
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+            width: `${(i + 1) * 6}px`,
+            height: `${(i + 1) * 6}px`,
+            animationDelay: `${i * 0.1}s`,
+            animationDuration: `${1 + i * 0.5}s`
+          }}
+        />
+      ))}
+      
       {/* Main cursor dot */}
       <div
-        className="cursor-dot"
+        className={`cursor-dot ${isLink ? 'cursor-dot-link' : ''}`}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -108,23 +141,35 @@ const DotCursor = () => {
       
       {/* Cursor ring */}
       <div
-        className={`cursor-ring ${isHovering ? 'cursor-hovering' : ''} ${isClicking ? 'cursor-clicking' : ''}`}
+        className={`cursor-ring ${isHovering ? 'cursor-hovering' : ''} ${isClicking ? 'cursor-clicking' : ''} ${isLink ? 'cursor-ring-link' : ''}`}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
           transition: isClicking ? 'transform 0.1s ease' : 'transform 0.2s ease',
-          boxShadow: isHovering ? '0 0 10px rgba(255, 255, 255, 0.8)' : 'none',
         }}
       />
       
       {/* Cursor glow effect */}
       <div
-        className="cursor-glow"
+        className={`cursor-glow ${isLink ? 'cursor-glow-link' : ''}`}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
         }}
       />
+
+      {/* Link text indicator */}
+      {isLink && hoverText && (
+        <div
+          className="cursor-link-text"
+          style={{
+            left: `${position.x}px`,
+            top: `${position.y + 35}px`,
+          }}
+        >
+          {hoverText}
+        </div>
+      )}
     </>
   );
 };
