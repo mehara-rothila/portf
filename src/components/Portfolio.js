@@ -190,48 +190,120 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section id="projects" className="py-20">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-            Projects
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Example project card */}
-            <div className="group backdrop-blur-md bg-white/90 dark:bg-gray-800/90 p-6 rounded-xl shadow-lg dark:shadow-gray-800 hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-xl font-semibold text-primary-600 dark:text-primary-400">
-                  Project 1 - Quiz App
-                </h3>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Sep 2024 - Oct 2024
-                </span>
-              </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
-                A dynamic, interactive platform that tests users' knowledge across multiple programming languages such as JavaScript, Python, React, SQL, C, and Java.
-              </p>
-              <div className="flex space-x-4">
-                <a
-                  href="https://github.com/mehara-rothila/Quiz-App"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
-                >
-                  <Github size={16} className="mr-1" /> View Code
-                </a>
-                <a
-                  href="https://mrr-quiz.netlify.app/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors duration-200"
-                >
-                  <ExternalLink size={16} className="mr-1" /> Live Demo
-                </a>
-              </div>
-            </div>
-          </div>
+   {/* Projects Section */}
+<section id="projects" className="py-20">
+  <div className="max-w-7xl mx-auto px-4">
+    <div className="grid gap-8">
+      {/* Project 1 - Quiz App */}
+      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-primary-500">
+            Project 1 - Quiz App
+          </h3>
+          <span className="text-gray-500 dark:text-gray-400">
+            Sep 2024 - Oct 2024
+          </span>
         </div>
-      </section>
+        
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          A dynamic, interactive platform that tests users' knowledge across multiple programming languages such as JavaScript, Python, React, SQL, C, and Java.
+        </p>
+
+        <div className="flex space-x-6">
+          <a
+            href="https://github.com/mehara-rothila/Quiz-App"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-primary-500 hover:text-primary-400"
+          >
+            <Github className="mr-2" size={20} /> View Code
+          </a>
+          <a
+            href="https://mrr-quiz.netlify.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-primary-500 hover:text-primary-400"
+          >
+            <ExternalLink className="mr-2" size={20} /> Live Demo
+          </a>
+        </div>
+      </div>
+
+      {/* Project 2 - Portfolio Website */}
+      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-primary-500">
+            Project 2 - Portfolio Website
+          </h3>
+          <span className="text-gray-500 dark:text-gray-400">
+            Oct 2024
+          </span>
+        </div>
+        
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          A cyberpunk-themed personal portfolio website built with React and Tailwind CSS, featuring custom animations, theme switching, and responsive design.
+        </p>
+
+        <div className="flex space-x-6">
+          <a
+            href="https://github.com/mehara-rothila/port-cyber"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-primary-500 hover:text-primary-400"
+          >
+            <Github className="mr-2" size={20} /> View Code
+          </a>
+          <a
+            href="https://portf-cyber.netlify.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-primary-500 hover:text-primary-400"
+          >
+            <ExternalLink className="mr-2" size={20} /> Live Demo
+          </a>
+        </div>
+      </div>
+
+      {/* Project 3 - UNIVOTE */}
+      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-primary-500">
+            Project 3 - UNIVOTE
+          </h3>
+          <span className="text-gray-500 dark:text-gray-400">
+            Jul 2024 - Oct 2024
+          </span>
+        </div>
+        
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          A secure and inclusive Electronic Voting System designed for all, including individuals with disabilities. Features biometric authentication, real-time monitoring, and innovative accessibility options.
+        </p>
+
+        <div className="mb-6">
+          <h4 className="text-primary-500 mb-2">Key Features:</h4>
+          <ul className="text-gray-600 dark:text-gray-300 space-y-1 list-inside">
+            <li>• Secure admin authentication & QR code scanning</li>
+            <li>• Facial recognition & fingerprint verification</li>
+            <li>• Real-time clock management with LCD display</li>
+            <li>• Special puff method for voters with paralysis</li>
+            <li>• Dual-mode operation (Automatic/Manual)</li>
+          </ul>
+        </div>
+
+        <div className="flex space-x-6">
+          <a
+            href="https://github.com/mehara-rothila/UNIVOTE"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-primary-500 hover:text-primary-400"
+          >
+            <Github className="mr-2" size={20} /> View Code
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Contact Section */}
       <section id="contact" className="py-20 relative overflow-hidden">
