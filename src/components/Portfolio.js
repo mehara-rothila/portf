@@ -336,16 +336,7 @@ const Portfolio = () => {
           </div>
         </div>
 
-        <div className="flex space-x-6">
-          <a
-            href="https://github.com/mehara-rothila/UNIVOTE"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200"
-          >
-            <Github className="mr-2" size={20} /> View Code
-          </a>
-        </div>
+      
       </div>
     </div>
   </div>
