@@ -1,7 +1,7 @@
+
 // src/components/Portfolio.js
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Github, Linkedin, Mail, ExternalLink, ChevronDown } from 'lucide-react';
-// Removed SmallModernLogo and HeroLogo as they are not used in the code
 import ThemeToggle from './ThemeToggle';
 import ParticleBackground from './ParticleBackground';
 
@@ -48,8 +48,8 @@ const Portfolio = () => {
       {/* Theme Toggle */}
       <ThemeToggle darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} />
 
-     {/* Navigation */}
-     <nav className="fixed top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm dark:shadow-gray-800 z-50 transition-all duration-300">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm dark:shadow-gray-800 z-50 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex-shrink-0 flex items-center">
@@ -108,8 +108,8 @@ const Portfolio = () => {
         )}
       </nav>
 
-     {/* Hero Section */}
-     <section id="home" className="relative pt-32 pb-20 px-4 overflow-hidden">
+      {/* Hero Section */}
+      <section id="home" className="relative pt-32 pb-20 px-4 overflow-hidden">
         <ParticleBackground />
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-6 animate-slide-up">
@@ -190,12 +190,16 @@ const Portfolio = () => {
         </div>
       </section>
 
-   {/* Projects Section */}
+
+{/* Projects Section */}
 <section id="projects" className="py-20">
   <div className="max-w-7xl mx-auto px-4">
+    <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+      Projects
+    </h2>
     <div className="grid gap-8">
       {/* Project 1 - Quiz App */}
-      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
+      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold text-primary-500">
             Project 1 - Quiz App
@@ -214,7 +218,7 @@ const Portfolio = () => {
             href="https://github.com/mehara-rothila/Quiz-App"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-primary-500 hover:text-primary-400"
+            className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200"
           >
             <Github className="mr-2" size={20} /> View Code
           </a>
@@ -222,7 +226,7 @@ const Portfolio = () => {
             href="https://mrr-quiz.netlify.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-primary-500 hover:text-primary-400"
+            className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200"
           >
             <ExternalLink className="mr-2" size={20} /> Live Demo
           </a>
@@ -230,7 +234,7 @@ const Portfolio = () => {
       </div>
 
       {/* Project 2 - Portfolio Website */}
-      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
+      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold text-primary-500">
             Project 2 - Portfolio Website
@@ -249,7 +253,7 @@ const Portfolio = () => {
             href="https://github.com/mehara-rothila/port-cyber"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-primary-500 hover:text-primary-400"
+            className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200"
           >
             <Github className="mr-2" size={20} /> View Code
           </a>
@@ -257,7 +261,7 @@ const Portfolio = () => {
             href="https://portf-cyber.netlify.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-primary-500 hover:text-primary-400"
+            className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200"
           >
             <ExternalLink className="mr-2" size={20} /> Live Demo
           </a>
@@ -265,7 +269,7 @@ const Portfolio = () => {
       </div>
 
       {/* Project 3 - UNIVOTE */}
-      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
+      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold text-primary-500">
             Project 3 - UNIVOTE
@@ -279,15 +283,57 @@ const Portfolio = () => {
           A secure and inclusive Electronic Voting System designed for all, including individuals with disabilities. Features biometric authentication, real-time monitoring, and innovative accessibility options.
         </p>
 
-        <div className="mb-6">
-          <h4 className="text-primary-500 mb-2">Key Features:</h4>
-          <ul className="text-gray-600 dark:text-gray-300 space-y-1 list-inside">
-            <li>• Secure admin authentication & QR code scanning</li>
-            <li>• Facial recognition & fingerprint verification</li>
-            <li>• Real-time clock management with LCD display</li>
-            <li>• Special puff method for voters with paralysis</li>
-            <li>• Dual-mode operation (Automatic/Manual)</li>
-          </ul>
+        {/* Content Grid */}
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Images Column */}
+          <div className="md:w-1/2">
+            <div className="flex flex-col gap-6">
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                <div className="relative w-full h-48 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
+                  <img
+                    src={require('../Images/univote-system-main.jpg')}
+                    alt="UNIVOTE System Main View"
+                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              </div>
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                <div className="relative w-full h-48 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
+                  <img
+                    src={require('../Images/univote-enclosure-side.jpg')}
+                    alt="UNIVOTE Enclosure Side View"
+                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Features Column */}
+          <div className="md:w-1/2">
+            <h4 className="text-primary-500 mb-4">Key Features:</h4>
+            <ul className="text-gray-600 dark:text-gray-300 space-y-3 mb-6">
+              <li>• Secure admin authentication & QR code scanning</li>
+              <li>• Facial recognition & fingerprint verification</li>
+              <li>• Real-time clock management with LCD display</li>
+              <li>• Special puff method for voters with paralysis</li>
+              <li>• Dual-mode operation (Automatic/Manual)</li>
+            </ul>
+            
+            <a
+              href="https://github.com/mehara-rothila/UNIVOTE"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200 group"
+            >
+              <Github className="mr-2 group-hover:scale-110 transition-transform duration-200" size={20} />
+              <span className="border-b border-primary-500 border-opacity-0 group-hover:border-opacity-100 transition-all duration-200">
+                View Code
+              </span>
+            </a>
+          </div>
         </div>
 
         <div className="flex space-x-6">
@@ -295,7 +341,7 @@ const Portfolio = () => {
             href="https://github.com/mehara-rothila/UNIVOTE"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-primary-500 hover:text-primary-400"
+            className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200"
           >
             <Github className="mr-2" size={20} /> View Code
           </a>
