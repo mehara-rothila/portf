@@ -44,6 +44,7 @@ module.exports = {
         'bounce-slow': 'bounce 3s infinite',
         'float': 'float 6s ease-in-out infinite',
         'glitch': 'glitch 1s linear infinite',
+        'scale-in': 'scaleIn 0.3s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -57,6 +58,10 @@ module.exports = {
         slideIn: {
           '0%': { transform: 'translateX(-20px)', opacity: '0' },
           '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        scaleIn: {
+          '0%': { transform: 'scale(0.9)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
         },
       },
     },

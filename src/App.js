@@ -1,7 +1,6 @@
 // src/App.js
 import React from 'react';
-import Portfolio from './components/Portfolio';
-import DotCursor from './components/DotCursor';
+import { Portfolio, DotCursor } from './components';
 
 function App() {
   return (
