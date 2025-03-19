@@ -1,9 +1,9 @@
-// src/components/CertificationCard.js
+// src/components/AwardCard.js
 import React, { useState } from 'react';
 import { Award, ExternalLink } from 'lucide-react';
 import ImageModal from './ImageModal';
 
-const CertificationCard = ({ certification }) => {
+const AwardCard = ({ award }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   const { 
@@ -12,8 +12,8 @@ const CertificationCard = ({ certification }) => {
     date,
     description, 
     image,
-    credentialUrl
-  } = certification;
+    demoUrl
+  } = award;
 
   const openImageModal = () => {
     setIsModalOpen(true);
@@ -43,15 +43,16 @@ const CertificationCard = ({ certification }) => {
         </p>
 
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Certificate Image */}
+          {/* Award Image */}
           <div className="md:w-1/2">
-            <div className="relative group cursor-pointer" onClick={openImageModal}>
+            <div className="relative group cursor-pointer certificate-container" onClick={openImageModal}>
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-              <div className="relative w-full h-64 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
+              <div className="relative w-full h-96 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
                 <img
                   src={image}
-                  alt={`${title} Certificate`}
-                  className="w-full h-full object-contain hover:scale-105 transition-transform duration-300 select-none"
+                  alt={`${title}`}
+                  className="w-auto h-full mx-auto object-contain hover:scale-105 transition-transform duration-300 select-none"
+                  style={{ maxHeight: '100%', maxWidth: '100%' }}
                   onContextMenu={(e) => e.preventDefault()}
                   draggable="false"
                 />
@@ -70,18 +71,20 @@ const CertificationCard = ({ certification }) => {
               {description}
             </p>
 
-            {credentialUrl && (
-              <a
-                href={credentialUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200 group"
-              >
-                <ExternalLink className="mr-2 group-hover:scale-110 transition-transform duration-200" size={20} />
-                <span className="border-b border-primary-500 border-opacity-0 group-hover:border-opacity-100 transition-all duration-200">
-                  Verify Credential
-                </span>
-              </a>
+            {demoUrl && (
+              <div className="flex flex-wrap">
+                <a
+                  href={demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200 group"
+                >
+                  <ExternalLink className="mr-2 group-hover:scale-110 transition-transform duration-200" size={20} />
+                  <span className="border-b border-primary-500 border-opacity-0 group-hover:border-opacity-100 transition-all duration-200">
+                    View Details
+                  </span>
+                </a>
+              </div>
             )}
           </div>
         </div>
@@ -90,7 +93,7 @@ const CertificationCard = ({ certification }) => {
       {/* Image Modal */}
       <ImageModal 
         image={image} 
-        alt={`${title} Certificate`} 
+        alt={`${title}`} 
         isOpen={isModalOpen} 
         onClose={closeImageModal} 
       />
@@ -98,4 +101,4 @@ const CertificationCard = ({ certification }) => {
   );
 };
 
-export default CertificationCard;
+export default AwardCard;

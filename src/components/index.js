@@ -12,3 +12,4 @@ export { default as SkillCard } from './SkillCard';
 export { default as ThemeToggle } from './ThemeToggle';
 export { default as ImageModal } from './ImageModal';
 export { default as CertificationCard } from './CertificationCard';
+export { default as AwardCard } from './AwardCard';

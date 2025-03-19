@@ -1,4 +1,3 @@
-// src/components/Portfolio.js
 import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, ChevronDown } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
@@ -8,6 +7,7 @@ import SkillCard from './SkillCard';
 import ContactItem from './ContactItem';
 import Navigation from './Navigation';
 import CertificationCard from './CertificationCard';
+import AwardCard from './AwardCard';
 
 // Import images directly
 import univoteSystemMain from '../Images/univote-system-main.jpg';
@@ -18,6 +18,7 @@ import weGoJimDashboard from '../Images/Screenshot 2025-03-19 224031.png';
 import weGoJimWorkout from '../Images/Screenshot 2025-03-19 224050.png';
 import portfolioScreenshot from '../Images/Screenshot 2025-03-19 230047.png';
 import fabricCertificate from '../Images/MeharaRanawaka_MS_FabricAnalytics_Cert_page-0001.jpg';
+import iasslPoster from '../Images/Case study participation (1).pdf-30_page-0001.jpg';
 
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,6 +30,7 @@ const Portfolio = () => {
     { name: 'Home', href: '#home', section: 'home' },
     { name: 'About', href: '#about', section: 'about' },
     { name: 'Skills', href: '#skills', section: 'skills' },
+    { name: 'Awards', href: '#awards', section: 'awards' },
     { name: 'Certifications', href: '#certifications', section: 'certifications' },
     { name: 'Projects', href: '#projects', section: 'projects' },
     { name: 'Contact', href: '#contact', section: 'contact' },
@@ -47,6 +49,19 @@ const Portfolio = () => {
     {
       category: 'Soft Skills',
       items: ['Problem Solving', 'Team Leadership', 'Communication', 'Project Management']
+    }
+  ];
+
+  // Awards data
+  const awards = [
+    {
+      id: 1,
+      title: "Finalist! IASSL National Poster Competition",
+      issuer: "IASSL (Institute of Applied Statistics Sri Lanka)",
+      date: "December 2024",
+      description: "Finalist in the IASSL National Poster Competition at the International Statistics Conference 2024. Our team, 'XForce,' developed a fraud detection model using an Explainable Boosting Machine (EBM) and SHAP values. This model accurately predicts fraudulent activities while providing transparent explanations for its decisions, enhancing interpretability and trust. Key skills demonstrated include data preprocessing, feature engineering, machine learning model development, and performance evaluation.",
+      image: iasslPoster,
+      demoUrl: "https://fraud-detect-xforce.netlify.app/"
     }
   ];
 
@@ -134,8 +149,7 @@ const Portfolio = () => {
           alt: "Comic Portal Admin Interface"
         }
       ],
-      githubUrl: "https://github.com/mehara-rothila/comic-portal",
-      liveUrl: "https://comic-portal.netlify.app"
+      githubUrl: "https://github.com/mehara-rothila/comic-portal"
     },
     {
       id: 4,
@@ -159,8 +173,7 @@ const Portfolio = () => {
           alt: "WE GO JIM Workout Interface"
         }
       ],
-      githubUrl: "https://github.com/mehara-rothila/we-go-jim",
-      liveUrl: "https://we-go-jim.netlify.app"
+      githubUrl: "https://github.com/mehara-rothila/we-go-jim"
     }
   ];
 
@@ -253,6 +266,23 @@ const Portfolio = () => {
                 key={skillGroup.category}
                 category={skillGroup.category}
                 items={skillGroup.items}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Awards Section */}
+      <section id="awards" className="py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+            Honors & Awards
+          </h2>
+          <div className="grid gap-8">
+            {awards.map(award => (
+              <AwardCard 
+                key={award.id}
+                award={award}
               />
             ))}
           </div>

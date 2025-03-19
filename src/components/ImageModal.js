@@ -60,11 +60,12 @@ const ImageModal = ({ image, alt, isOpen, onClose }) => {
         </button>
         
         {/* Image container */}
-        <div className="relative max-w-[80vw] overflow-hidden rounded-lg shadow-2xl">
+        <div className="relative max-w-[85vw] overflow-hidden rounded-lg shadow-2xl">
           <img 
             src={image} 
             alt={alt} 
             className="w-full h-full object-contain animate-scale-in select-none max-h-[85vh]"
+            style={{ objectFit: 'contain', maxHeight: '85vh' }}
             onContextMenu={handleContextMenu}
             onDragStart={(e) => e.preventDefault()}
           />
