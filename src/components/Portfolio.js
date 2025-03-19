@@ -1,6 +1,6 @@
 // src/components/Portfolio.js
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Github, Linkedin, Mail, ExternalLink, ChevronDown } from 'lucide-react';
+import { Github, Linkedin, Mail, ChevronDown } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import ParticleBackground from './ParticleBackground';
 import ProjectCard from './ProjectCard';
