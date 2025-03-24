@@ -121,6 +121,9 @@ const NetworkBackground = ({
         return nodeCount; // Large screens get the full count
       }
     };
+
+    // Calculate max connections per node
+    const connectionsPerNode = isMobile ? 4 : maxConnections;
     
     // Node class
     class Node {
@@ -134,8 +137,8 @@ const NetworkBackground = ({
         this.vx = (Math.random() - 0.5) * 0.6 * speedMultiplier;
         this.vy = (Math.random() - 0.5) * 0.6 * speedMultiplier;
         
-        // Increased max connections for mobile to create denser mesh
-        this.maxConnections = isMobile ? Math.ceil(maxConnections * 1.25) : maxConnections;
+        // Use the connectionsPerNode variable
+        this.maxConnections = connectionsPerNode;
         this.connections = 0;
         this.pulsePhase = Math.random() * Math.PI * 2;
         this.pulseSpeed = Math.random() * 0.03 + 0.02;
@@ -282,19 +285,17 @@ const NetworkBackground = ({
       const maxDistance = isMobile 
         ? Math.min(dimensions.width * 0.2, 160) 
         : Math.min(150, dimensions.width * 0.15);
-        
-      const connectionsPerNode = isMobile ? 4 : maxConnections;
       
       // Improved line rendering
       ctx.lineCap = 'round';
       
       for (let i = 0; i < nodes.length; i++) {
         const nodeA = nodes[i];
-        if (nodeA.connections >= nodeA.maxConnections) continue;
+        if (nodeA.connections >= connectionsPerNode) continue;
         
         for (let j = i + 1; j < nodes.length; j++) {
           const nodeB = nodes[j];
-          if (nodeB.connections >= nodeB.maxConnections) continue;
+          if (nodeB.connections >= connectionsPerNode) continue;
           
           const distance = nodeA.distanceTo(nodeB);
           if (distance < maxDistance) {
