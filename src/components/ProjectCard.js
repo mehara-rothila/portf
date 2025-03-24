@@ -1,71 +1,57 @@
+
 // src/components/ProjectCard.js
 import React, { useState } from 'react';
 import { Github, ExternalLink } from 'lucide-react';
 import ImageModal from './ImageModal';
 
 const ProjectCard = ({ project }) => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imageAlt, setImageAlt] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    image: null,
+    alt: ''
+  });
   
-  const { 
-    title, 
-    period, 
-    description, 
-    features, 
-    images, 
-    githubUrl, 
-    liveUrl 
-  } = project;
+  const { title, period, description, features, images, githubUrl, liveUrl } = project;
 
   const openImageModal = (image, alt) => {
-    setSelectedImage(image);
-    setImageAlt(alt);
-    setIsModalOpen(true);
+    setModalState({ isOpen: true, image, alt });
   };
 
   const closeImageModal = () => {
-    setIsModalOpen(false);
+    setModalState(prevState => ({ ...prevState, isOpen: false }));
   };
+
+  // Render link with icon
+  const renderLink = (url, icon, text) => url && (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200 group"
+    >
+      {React.cloneElement(icon, { className: "mr-2 group-hover:scale-110 transition-transform duration-200", size: 20 })}
+      <span className="border-b border-primary-500 border-opacity-0 group-hover:border-opacity-100 transition-all duration-200">
+        {text}
+      </span>
+    </a>
+  );
 
   // Simple project card (for projects without images)
   if (!images) {
     return (
       <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
-          <h3 className="text-xl font-semibold text-primary-500">
-            {title}
-          </h3>
+          <h3 className="text-xl font-semibold text-primary-500">{title}</h3>
           <span className="text-sm bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full inline-flex self-start">
             {period}
           </span>
         </div>
 
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          {description}
-        </p>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">{description}</p>
 
         <div className="flex flex-wrap gap-4">
-          {githubUrl && (
-            <a
-              href={githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200"
-            >
-              <Github className="mr-2" size={20} /> View Code
-            </a>
-          )}
-          {liveUrl && (
-            <a
-              href={liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200"
-            >
-              <ExternalLink className="mr-2" size={20} /> Live Demo
-            </a>
-          )}
+          {renderLink(githubUrl, <Github />, "View Code")}
+          {renderLink(liveUrl, <ExternalLink />, "Live Demo")}
         </div>
       </div>
     );
@@ -76,22 +62,18 @@ const ProjectCard = ({ project }) => {
     <>
       <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
-          <h3 className="text-xl font-semibold text-primary-500">
-            {title}
-          </h3>
+          <h3 className="text-xl font-semibold text-primary-500">{title}</h3>
           <span className="text-sm bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full inline-flex self-start">
             {period}
           </span>
         </div>
 
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          {description}
-        </p>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">{description}</p>
 
         {/* Content Grid */}
         <div className="flex flex-col md:flex-row gap-8">
           {/* Images Column */}
-          {images && images.length > 0 && (
+          {images?.length > 0 && (
             <div className="md:w-1/2">
               <div className="flex flex-col gap-6">
                 {images.map((image, index) => (
@@ -122,8 +104,8 @@ const ProjectCard = ({ project }) => {
           )}
 
           {/* Features Column */}
-          <div className={images && images.length > 0 ? "md:w-1/2" : "w-full"}>
-            {features && features.length > 0 && (
+          <div className={images?.length > 0 ? "md:w-1/2" : "w-full"}>
+            {features?.length > 0 && (
               <>
                 <h4 className="text-primary-500 mb-4">Key Features:</h4>
                 <ul className="text-gray-600 dark:text-gray-300 space-y-3 mb-6">
@@ -135,32 +117,8 @@ const ProjectCard = ({ project }) => {
             )}
 
             <div className="flex flex-wrap gap-4">
-              {githubUrl && (
-                <a
-                  href={githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200 group"
-                >
-                  <Github className="mr-2 group-hover:scale-110 transition-transform duration-200" size={20} />
-                  <span className="border-b border-primary-500 border-opacity-0 group-hover:border-opacity-100 transition-all duration-200">
-                    View Code
-                  </span>
-                </a>
-              )}
-              {liveUrl && (
-                <a
-                  href={liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200 group"
-                >
-                  <ExternalLink className="mr-2 group-hover:scale-110 transition-transform duration-200" size={20} />
-                  <span className="border-b border-primary-500 border-opacity-0 group-hover:border-opacity-100 transition-all duration-200">
-                    Live Demo
-                  </span>
-                </a>
-              )}
+              {renderLink(githubUrl, <Github />, "View Code")}
+              {renderLink(liveUrl, <ExternalLink />, "Live Demo")}
             </div>
           </div>
         </div>
@@ -168,14 +126,13 @@ const ProjectCard = ({ project }) => {
 
       {/* Image Modal */}
       <ImageModal 
-        image={selectedImage} 
-        alt={imageAlt} 
-        isOpen={isModalOpen} 
+        image={modalState.image} 
+        alt={modalState.alt} 
+        isOpen={modalState.isOpen} 
         onClose={closeImageModal} 
       />
     </>
   );
 };
-
 
 export default ProjectCard;

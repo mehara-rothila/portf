@@ -5,23 +5,7 @@ import ImageModal from './ImageModal';
 
 const AwardCard = ({ award }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  const { 
-    title, 
-    issuer,
-    date,
-    description, 
-    image,
-    demoUrl
-  } = award;
-
-  const openImageModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeImageModal = () => {
-    setIsModalOpen(false);
-  };
+  const { title, issuer, date, description, image, demoUrl } = award;
 
   return (
     <>
@@ -29,9 +13,7 @@ const AwardCard = ({ award }) => {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
           <div className="flex items-center space-x-2">
             <Award className="text-primary-500" size={24} />
-            <h3 className="text-xl font-semibold text-primary-500">
-              {title}
-            </h3>
+            <h3 className="text-xl font-semibold text-primary-500">{title}</h3>
           </div>
           <span className="text-sm bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full inline-flex self-start">
             {date}
@@ -45,12 +27,12 @@ const AwardCard = ({ award }) => {
         <div className="flex flex-col md:flex-row gap-8">
           {/* Award Image */}
           <div className="md:w-1/2">
-            <div className="relative group cursor-pointer certificate-container" onClick={openImageModal}>
+            <div className="relative group cursor-pointer certificate-container" onClick={() => setIsModalOpen(true)}>
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
               <div className="relative w-full h-96 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
                 <img
                   src={image}
-                  alt={`${title}`}
+                  alt={title}
                   className="w-auto h-full mx-auto object-contain hover:scale-105 transition-transform duration-300 select-none"
                   style={{ maxHeight: '100%', maxWidth: '100%' }}
                   onContextMenu={(e) => e.preventDefault()}
@@ -67,9 +49,7 @@ const AwardCard = ({ award }) => {
 
           {/* Description */}
           <div className="md:w-1/2">
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              {description}
-            </p>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">{description}</p>
 
             {demoUrl && (
               <div className="flex flex-wrap">
@@ -93,9 +73,9 @@ const AwardCard = ({ award }) => {
       {/* Image Modal */}
       <ImageModal 
         image={image} 
-        alt={`${title}`} 
+        alt={title} 
         isOpen={isModalOpen} 
-        onClose={closeImageModal} 
+        onClose={() => setIsModalOpen(false)} 
       />
     </>
   );
