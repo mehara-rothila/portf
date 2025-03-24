@@ -5,7 +5,8 @@ const NetworkBackground = ({
   colorScheme = 'default',
   maxConnections = 5,
   interactive = true,
-  speed = 1.5, // Increased default speed (was 1.0 implicitly)
+  speed = 1.5, 
+  mobileDensityFactor = 0.7  // Increased from 0.5 to 0.7 (70% of desktop density)
 }) => {
   const canvasRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -22,8 +23,8 @@ const NetworkBackground = ({
       
       // Check for low performance device
       const lowPerformance = mobile && (
-        navigator.deviceMemory < 4 || // Low memory (if available)
-        navigator.hardwareConcurrency < 4 || // Few CPU cores (if available) 
+        (typeof navigator.deviceMemory !== 'undefined' && navigator.deviceMemory < 4) || // Low memory (if available)
+        (typeof navigator.hardwareConcurrency !== 'undefined' && navigator.hardwareConcurrency < 4) || // Few CPU cores (if available) 
         window.screen.width * window.screen.height < 1000000 // Low resolution
       );
       setIsLowPerformance(lowPerformance);
@@ -47,9 +48,9 @@ const NetworkBackground = ({
     let frameCount = 0;
     let lastTime = 0;
     
-    // Adjust node count based on device capability
+    // Adjust node count based on device capability, but maintain higher density
     const adjustedNodeCount = isMobile 
-      ? (isLowPerformance ? Math.floor(nodeCount / 4) : Math.floor(nodeCount / 2)) 
+      ? (isLowPerformance ? Math.floor(nodeCount * 0.5) : Math.floor(nodeCount * mobileDensityFactor)) 
       : nodeCount;
     
     // Color schemes
@@ -93,49 +94,44 @@ const NetworkBackground = ({
     // Set up nodes with different complexity based on device performance
     class Node {
       constructor() {
-        // Simpler nodes for mobile devices
-        const mobileFactor = isMobile ? 0.6 : 1;
+        // Simpler nodes for mobile devices, but maintain good visuals
+        const mobileFactor = isMobile ? 0.75 : 1; // Increased from 0.6
         const lowPerformanceFactor = isLowPerformance ? 0.7 : 1;
         const sizeFactor = mobileFactor * lowPerformanceFactor;
         
         // Apply speed factor to velocity
         const speedFactor = speed * (isMobile ? 0.8 : 1);
         
-        this.radius = (Math.random() * 2 + 1) * sizeFactor;
+        // Make nodes slightly smaller on mobile for better density
+        this.radius = (Math.random() * 1.8 + 0.8) * sizeFactor;
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         
-        // Increase base velocity for faster movement
         this.vx = (Math.random() - 0.5) * 0.6 * speedFactor;
         this.vy = (Math.random() - 0.5) * 0.6 * speedFactor;
         
         this.connections = 0;
         this.lastConnections = []; // Track last connected nodes
         
-        // Faster pulse effect 
-        if (!isLowPerformance) {
-          this.pulsePhase = Math.random() * Math.PI * 2;
-          this.pulseSpeed = (Math.random() * 0.03 + 0.02) * speed; // Faster pulse
-          this.pulseMagnitude = Math.random() * 0.5 + 0.5;
-        } else {
-          this.pulsePhase = 0;
-          this.pulseSpeed = 0;
-          this.pulseMagnitude = 0;
-        }
+        // Pulse effect - simplified on low performance devices
+        this.pulsePhase = Math.random() * Math.PI * 2;
+        this.pulseSpeed = (Math.random() * 0.03 + 0.02) * speed * (isLowPerformance ? 0.5 : 1);
+        this.pulseMagnitude = Math.random() * (isLowPerformance ? 0.3 : 0.5) + (isLowPerformance ? 0.3 : 0.5);
         
         // Direction change intervals
         this.directionChangeCounter = Math.random() * 100 + 50;
         this.directionChangeRate = (Math.random() * 0.01 + 0.005) * speed;
         
         // Random color selection between node and accent color
-        this.color = Math.random() > 0.8 ? colors.accentColor : colors.nodeColor;
-        this.glow = Math.random() > 0.8 ? colors.mouseGlow : colors.nodeGlow;
+        // More accent colors for visual variety
+        this.color = Math.random() > 0.75 ? colors.accentColor : colors.nodeColor;
+        this.glow = Math.random() > 0.75 ? colors.mouseGlow : colors.nodeGlow;
       }
       
       update(deltaTime) {
-        // Add pulse effect (only if not low performance)
+        // Add pulse effect (simplified on low performance)
         let pulse = 1;
-        if (!isLowPerformance) {
+        if (!isLowPerformance || Math.random() > 0.7) { // Only some nodes pulse on low performance
           this.pulsePhase += this.pulseSpeed * deltaTime;
           pulse = Math.sin(this.pulsePhase) * this.pulseMagnitude + 1;
         }
@@ -143,7 +139,7 @@ const NetworkBackground = ({
         // Random direction changes
         this.directionChangeCounter -= this.directionChangeRate * deltaTime * 60;
         if (this.directionChangeCounter <= 0) {
-          // More dramatic direction change
+          // Direction change
           this.vx = (Math.random() - 0.5) * 0.6 * speed;
           this.vy = (Math.random() - 0.5) * 0.6 * speed;
           this.directionChangeCounter = Math.random() * 100 + 50;
@@ -173,9 +169,9 @@ const NetworkBackground = ({
         ctx.fillStyle = this.color;
         ctx.fill();
         
-        // Add glow effect (only if not low performance)
-        if (!isLowPerformance) {
-          ctx.shadowBlur = 10;
+        // Add glow effect (selective on low performance)
+        if (!isLowPerformance || Math.random() > 0.5) { // Only some nodes glow on low performance
+          ctx.shadowBlur = isLowPerformance ? 5 : 10;
           ctx.shadowColor = this.glow;
           ctx.fill();
           ctx.shadowBlur = 0;
@@ -268,11 +264,11 @@ const NetworkBackground = ({
       // Handle resize if needed
       if (needsResize) {
         // Use appropriate scaling for mobile
-        const dpr = isMobile ? 1 : (window.devicePixelRatio || 1);
+        const dpr = isMobile ? (isLowPerformance ? 0.75 : 1) : (window.devicePixelRatio || 1);
         canvas.width = canvas.clientWidth * dpr;
         canvas.height = canvas.clientHeight * dpr;
         
-        if (!isMobile) {
+        if (!isMobile || dpr !== 1) {
           ctx.scale(dpr, dpr);
         }
         
@@ -280,9 +276,9 @@ const NetworkBackground = ({
         initNodes();
       }
       
-      // Skip frames on low performance devices
+      // Skip frames on low performance devices, but less aggressively
       frameCount++;
-      if (isLowPerformance && frameCount % 3 !== 0) {
+      if (isLowPerformance && frameCount % 2 !== 0) { // Changed from 3 to 2
         animationFrameId = requestAnimationFrame(animate);
         return;
       }
@@ -292,7 +288,7 @@ const NetworkBackground = ({
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       // Draw mouse influence area if mouse is active and not low performance
-      if (mousePosition.x !== null && interactive && !isLowPerformance) {
+      if (mousePosition.x !== null && interactive && (!isLowPerformance || Math.random() > 0.5)) {
         const gradient = ctx.createRadialGradient(
           mousePosition.x, mousePosition.y, 0,
           mousePosition.x, mousePosition.y, 150
@@ -316,8 +312,8 @@ const NetworkBackground = ({
           const dy = mousePosition.y - node.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          // Reduce influence distance on mobile
-          const influenceRange = isMobile ? 100 : 150;
+          // Mobile influence range
+          const influenceRange = isMobile ? 120 : 150; // Increased from 100
           
           if (distance < influenceRange) {
             // Create stronger attraction effect
@@ -338,10 +334,15 @@ const NetworkBackground = ({
         // Update and draw the node
         node.update(deltaTime);
         
-        // Find connections (with mobile optimizations)
-        // On mobile, reduce number of connections and connection distance
-        const actualMaxConnections = isMobile ? (isLowPerformance ? 2 : 3) : maxConnections;
-        const maxDistance = isMobile ? (isLowPerformance ? 80 : 120) : 150;
+        // Find connections with improved mobile settings
+        // Increased connection parameters
+        const actualMaxConnections = isMobile 
+          ? (isLowPerformance ? 3 : 4) // Increased from 2/3
+          : maxConnections;
+          
+        const maxDistance = isMobile 
+          ? (isLowPerformance ? 100 : 140) // Increased from 80/120
+          : 150;
         
         for (let j = i + 1; j < nodes.length; j++) {
           if (node.connections >= actualMaxConnections) break;
@@ -360,12 +361,12 @@ const NetworkBackground = ({
             ctx.moveTo(node.x, node.y);
             ctx.lineTo(otherNode.x, otherNode.y);
             ctx.strokeStyle = `${colors.lineColor}${Math.floor(opacity * 255).toString(16).padStart(2, '0')}`;
-            ctx.lineWidth = isMobile ? width * 0.7 : width; // Thinner lines on mobile
+            ctx.lineWidth = isMobile ? width * 0.8 : width; // Slightly thicker than before
             ctx.stroke();
             
-            // Add glow to lines (only if not low performance)
-            if (!isLowPerformance) {
-              ctx.shadowBlur = 5;
+            // Add glow to lines (selective on low performance)
+            if (!isLowPerformance || Math.random() > 0.5) {
+              ctx.shadowBlur = isLowPerformance ? 3 : 5;
               ctx.shadowColor = colors.lineColor;
               ctx.stroke();
               ctx.shadowBlur = 0;
@@ -407,10 +408,10 @@ const NetworkBackground = ({
         clearTimeout(touchTimeout);
       }
     };
-  }, [nodeCount, colorScheme, maxConnections, interactive, isMobile, isLowPerformance, speed]);
+  }, [nodeCount, colorScheme, maxConnections, interactive, isMobile, isLowPerformance, speed, mobileDensityFactor]);
   
   // Fallback for extremely low performance devices
-  if (isLowPerformance && isMobile) {
+  if (isLowPerformance && isMobile && window.innerWidth < 400) {
     const getGradientByScheme = () => {
       switch (colorScheme) {
         case 'cyberpunk':
