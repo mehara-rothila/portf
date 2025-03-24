@@ -12,7 +12,7 @@ const NetworkBackground = ({
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [isMobile, setIsMobile] = useState(false);
 
-  // Simple mobile detection
+  // Check if device is mobile
   useEffect(() => {
     const checkMobile = () => {
       // Simple width-based detection that's reliable across devices
@@ -50,8 +50,9 @@ const NetworkBackground = ({
       canvas.style.width = width + 'px';
       canvas.style.height = height + 'px';
       
-      // Set actual size in memory (scaled for retina)
-      const dpr = isMobile ? 1 : (window.devicePixelRatio || 1);
+      // Set actual size in memory (scaled for retina/high-DPI displays)
+      // Increased DPI for mobile to improve line quality
+      const dpr = window.devicePixelRatio || 1;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       
@@ -104,17 +105,18 @@ const NetworkBackground = ({
     let mousePos = { x: null, y: null };
     let lastTime = 0;
     
-    // Calculate adjusted node count - more reliable than device detection
+    // Calculate adjusted node count - further enhanced for mobile
     const getAdjustedNodeCount = () => {
-      // Base on actual screen area rather than device type
+      // Base on actual screen area
       const area = dimensions.width * dimensions.height;
       
-      if (area < 300000) { // Very small screens
-        return Math.max(25, Math.floor(nodeCount * 0.5));
+      if (isMobile) {
+        // Significantly increased node density for mobile
+        return Math.max(50, Math.floor(nodeCount * 0.9));
       } else if (area < 500000) { // Small screens
-        return Math.max(30, Math.floor(nodeCount * 0.6));
+        return Math.max(40, Math.floor(nodeCount * 0.75));
       } else if (area < 800000) { // Medium screens
-        return Math.max(40, Math.floor(nodeCount * 0.8));
+        return Math.max(50, Math.floor(nodeCount * 0.9));
       } else {
         return nodeCount; // Large screens get the full count
       }
@@ -123,23 +125,55 @@ const NetworkBackground = ({
     // Node class
     class Node {
       constructor() {
-        this.radius = Math.random() * 1.8 + 0.8;
-        this.x = Math.random() * dimensions.width;
-        this.y = Math.random() * dimensions.height;
+        // Smaller nodes on mobile for better performance with higher density
+        this.radius = Math.random() * 1.6 + (isMobile ? 0.6 : 0.8); 
+        
+        // Distribute nodes more evenly
+        if (Math.random() > 0.8) {
+          // Some nodes at random positions
+          this.x = Math.random() * dimensions.width;
+          this.y = Math.random() * dimensions.height;
+        } else {
+          // Most nodes in a grid-like pattern with randomness
+          const gridSize = isMobile ? 
+            Math.sqrt(getAdjustedNodeCount()) * 1.5 : 
+            Math.sqrt(getAdjustedNodeCount()) * 1.2;
+            
+          const cellWidth = dimensions.width / gridSize;
+          const cellHeight = dimensions.height / gridSize;
+          
+          const gridX = Math.floor(Math.random() * gridSize);
+          const gridY = Math.floor(Math.random() * gridSize);
+          
+          // Add randomness to grid positions
+          this.x = (gridX * cellWidth) + (Math.random() * cellWidth);
+          this.y = (gridY * cellHeight) + (Math.random() * cellHeight);
+        }
         
         // Adjust speed based on screen size
-        const speedMultiplier = speed * (isMobile ? 0.8 : 1);
+        const speedMultiplier = speed * (isMobile ? 0.65 : 1);
         this.vx = (Math.random() - 0.5) * 0.6 * speedMultiplier;
         this.vy = (Math.random() - 0.5) * 0.6 * speedMultiplier;
         
+        // Increased max connections for denser mesh
+        this.maxConnections = isMobile ? Math.ceil(maxConnections * 1.5) : maxConnections;
         this.connections = 0;
         this.pulsePhase = Math.random() * Math.PI * 2;
         this.pulseSpeed = Math.random() * 0.03 + 0.02;
         this.pulseMagnitude = Math.random() * 0.5 + 0.5;
         
-        // Random color
-        this.color = Math.random() > 0.75 ? colors.accentColor : colors.nodeColor;
-        this.glow = Math.random() > 0.75 ? colors.mouseGlow : colors.nodeGlow;
+        // More varied colors
+        const colorRoll = Math.random();
+        if (colorRoll > 0.85) {
+          this.color = colors.accentColor;
+          this.glow = colors.mouseGlow;
+        } else if (colorRoll > 0.7) {
+          this.color = colors.mouseGlow;
+          this.glow = colors.accentColor;
+        } else {
+          this.color = colors.nodeColor;
+          this.glow = colors.nodeGlow;
+        }
       }
       
       update(deltaTime) {
@@ -168,13 +202,11 @@ const NetworkBackground = ({
         ctx.fillStyle = this.color;
         ctx.fill();
         
-        // Add glow (lightweight for mobile)
-        if (!isMobile || Math.random() > 0.5) {
-          ctx.shadowBlur = isMobile ? 5 : 10;
-          ctx.shadowColor = this.glow;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
+        // Add glow - improved for mobile
+        ctx.shadowBlur = isMobile ? 3 : 10;
+        ctx.shadowColor = this.glow;
+        ctx.fill();
+        ctx.shadowBlur = 0;
         
         // Reset connections
         this.connections = 0;
@@ -199,7 +231,7 @@ const NetworkBackground = ({
     // Initialize
     initNodes();
     
-    // Mouse/touch events
+    // Enhanced mouse/touch events
     const handlePointerMove = (e) => {
       if (!interactive) return;
       
@@ -215,15 +247,64 @@ const NetworkBackground = ({
       }
     };
     
-    const handlePointerLeave = () => {
-      mousePos = { x: null, y: null };
+    // Add touch start handler for better mobile interaction
+    const handleTouchStart = (e) => {
+      if (!interactive) return;
+      
+      const touch = e.touches[0];
+      if (touch) {
+        const rect = canvas.getBoundingClientRect();
+        mousePos = {
+          x: touch.clientX - rect.left,
+          y: touch.clientY - rect.top
+        };
+        
+        // Prevent scrolling when interacting with canvas
+        if (e.target === canvas) {
+          e.preventDefault();
+        }
+      }
     };
     
-    // Simplified event listeners that work on mobile and desktop
+    const handlePointerLeave = () => {
+      // On mobile, keep the last position for a short time before clearing
+      if (isMobile) {
+        setTimeout(() => {
+          mousePos = { x: null, y: null };
+        }, 500);
+      } else {
+        mousePos = { x: null, y: null };
+      }
+    };
+    
+    // Enhanced event listeners for better interactivity
     canvas.addEventListener('mousemove', handlePointerMove);
-    canvas.addEventListener('touchmove', handlePointerMove);
+    canvas.addEventListener('touchmove', handlePointerMove, { passive: false });
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
     canvas.addEventListener('mouseleave', handlePointerLeave);
     canvas.addEventListener('touchend', handlePointerLeave);
+    
+    // Add periodic simulation of interaction on mobile for increased visual interest
+    let simulationTimer = null;
+    if (isMobile) {
+      const simulateInteraction = () => {
+        if (mousePos.x === null && mousePos.y === null && Math.random() > 0.7) {
+          // Simulate a touch at a random position
+          mousePos = {
+            x: Math.random() * dimensions.width,
+            y: Math.random() * dimensions.height
+          };
+          
+          // Clear it after a short time
+          setTimeout(() => {
+            mousePos = { x: null, y: null };
+          }, 1500 + Math.random() * 1000);
+        }
+      };
+      
+      // Run simulation every few seconds
+      simulationTimer = setInterval(simulateInteraction, 5000);
+    }
     
     // Animation loop
     const animate = (timestamp) => {
@@ -236,19 +317,45 @@ const NetworkBackground = ({
       ctx.fillStyle = colors.background;
       ctx.fillRect(0, 0, dimensions.width, dimensions.height);
       
-      // Mouse effect
+      // Enhanced mouse/touch effect
       if (mousePos.x !== null && mousePos.y !== null) {
+        // Main glow effect
+        const interactionRadius = isMobile ? 140 : 120;
         const gradient = ctx.createRadialGradient(
           mousePos.x, mousePos.y, 0,
-          mousePos.x, mousePos.y, 120
+          mousePos.x, mousePos.y, interactionRadius
         );
-        gradient.addColorStop(0, `${colors.mouseGlow}30`);
+        gradient.addColorStop(0, `${colors.mouseGlow}40`); // More intense glow
+        gradient.addColorStop(0.5, `${colors.mouseGlow}20`);
         gradient.addColorStop(1, `${colors.mouseGlow}00`);
         
         ctx.beginPath();
         ctx.fillStyle = gradient;
-        ctx.arc(mousePos.x, mousePos.y, 120, 0, Math.PI * 2);
+        ctx.arc(mousePos.x, mousePos.y, interactionRadius, 0, Math.PI * 2);
         ctx.fill();
+        
+        // Additional pulse effect (subtle rings)
+        if (!isMobile || Math.random() > 0.7) { // Less frequent on mobile for performance
+          const pulseTime = timestamp % 3000 / 3000;
+          const pulseSize = isMobile ? 
+                          interactionRadius * 0.5 + interactionRadius * pulseTime : 
+                          interactionRadius * 0.3 + interactionRadius * pulseTime;
+          
+          const pulseOpacity = (1 - pulseTime) * 0.2;
+          const pulseGradient = ctx.createRadialGradient(
+            mousePos.x, mousePos.y, pulseSize * 0.8,
+            mousePos.x, mousePos.y, pulseSize
+          );
+          
+          pulseGradient.addColorStop(0, `${colors.accentColor}${Math.floor(pulseOpacity * 255).toString(16).padStart(2, '0')}`);
+          pulseGradient.addColorStop(1, `${colors.accentColor}00`);
+          
+          ctx.beginPath();
+          ctx.strokeStyle = pulseGradient;
+          ctx.lineWidth = 1.5;
+          ctx.arc(mousePos.x, mousePos.y, pulseSize, 0, Math.PI * 2);
+          ctx.stroke();
+        }
         
         // Update node velocities based on mouse position
         nodes.forEach(node => {
@@ -263,7 +370,7 @@ const NetworkBackground = ({
             
             // Limit speed
             const nodeSpeed = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
-            const maxSpeed = isMobile ? 1.5 : 2.5;
+            const maxSpeed = isMobile ? 1.8 : 2.5; // Increased for mobile
             if (nodeSpeed > maxSpeed) {
               node.vx = (node.vx / nodeSpeed) * maxSpeed;
               node.vy = (node.vy / nodeSpeed) * maxSpeed;
@@ -276,23 +383,52 @@ const NetworkBackground = ({
       nodes.forEach(node => node.update(deltaTime));
       
       // Draw connections
-      // Determine max connection distance based on screen size
-      const maxDistance = Math.min(150, dimensions.width * 0.15);
-      const connectionsPerNode = isMobile ? 3 : maxConnections;
+      // Determine max connection distance based on screen size - significantly increased for mobile
+      const maxDistance = isMobile 
+        ? Math.min(dimensions.width * 0.25, 180) 
+        : Math.min(150, dimensions.width * 0.15);
+        
+      const connectionsPerNode = isMobile ? 5 : maxConnections;
+      
+      // Add occasional longer connections for visual interest
+      const longConnectionChance = isMobile ? 0.15 : 0.1;
+      const longDistanceMultiplier = 1.5;
+      
+      // Improved line rendering
+      ctx.lineCap = 'round';
       
       for (let i = 0; i < nodes.length; i++) {
         const nodeA = nodes[i];
-        if (nodeA.connections >= connectionsPerNode) continue;
+        if (nodeA.connections >= nodeA.maxConnections) continue;
         
         for (let j = i + 1; j < nodes.length; j++) {
           const nodeB = nodes[j];
-          if (nodeB.connections >= connectionsPerNode) continue;
+          if (nodeB.connections >= nodeB.maxConnections) continue;
           
           const distance = nodeA.distanceTo(nodeB);
-          if (distance < maxDistance) {
+          const checkDistance = Math.random() < longConnectionChance ? 
+                               maxDistance * longDistanceMultiplier : 
+                               maxDistance;
+          
+          if (distance < checkDistance) {
             // Draw line with opacity based on distance
-            const opacity = (1 - (distance / maxDistance)).toFixed(2);
-            const lineWidth = Math.max(0.5, 1.5 * (1 - distance / maxDistance));
+            const baseMaxDistance = Math.random() < longConnectionChance ? 
+                                   maxDistance * longDistanceMultiplier : 
+                                   maxDistance;
+            const opacity = (1 - (distance / baseMaxDistance)).toFixed(2);
+            
+            // Improved line quality with dynamic width
+            let lineWidth = Math.max(0.7, 1.5 * (1 - distance / baseMaxDistance));
+            
+            // Better line quality for mobile
+            if (isMobile) {
+              // Different line widths create more visual texture
+              if (Math.random() > 0.7) {
+                lineWidth = Math.max(1, lineWidth * 1.3);
+              } else {
+                lineWidth = Math.max(0.85, lineWidth);
+              }
+            }
             
             ctx.beginPath();
             ctx.moveTo(nodeA.x, nodeA.y);
@@ -300,17 +436,18 @@ const NetworkBackground = ({
             
             // Convert opacity to hex
             const opacityHex = Math.floor(parseFloat(opacity) * 255).toString(16).padStart(2, '0');
-            ctx.strokeStyle = `${colors.lineColor}${opacityHex}`;
+            
+            // Slightly randomize colors for visual interest
+            const lineColorBase = Math.random() > 0.9 ? colors.accentColor : colors.lineColor;
+            ctx.strokeStyle = `${lineColorBase}${opacityHex}`;
             ctx.lineWidth = lineWidth;
             ctx.stroke();
             
-            // Add glow to lines (less on mobile)
-            if (!isMobile || Math.random() > 0.7) {
-              ctx.shadowBlur = 3;
-              ctx.shadowColor = colors.lineColor;
-              ctx.stroke();
-              ctx.shadowBlur = 0;
-            }
+            // Add glow to lines - enhanced for all devices
+            ctx.shadowBlur = isMobile ? 2.5 : 3;
+            ctx.shadowColor = lineColorBase;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
             
             // Count connections
             nodeA.connections++;
@@ -332,8 +469,13 @@ const NetworkBackground = ({
         cancelAnimationFrame(animationRef.current);
       }
       
+      if (simulationTimer) {
+        clearInterval(simulationTimer);
+      }
+      
       canvas.removeEventListener('mousemove', handlePointerMove);
       canvas.removeEventListener('touchmove', handlePointerMove);
+      canvas.removeEventListener('touchstart', handleTouchStart);
       canvas.removeEventListener('mouseleave', handlePointerLeave);
       canvas.removeEventListener('touchend', handlePointerLeave);
     };
