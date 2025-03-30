@@ -1,70 +1,156 @@
-# Getting Started with Create React App
+Okay, thank you for the image! That helps immensely. I finally understand what you mean.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+You are seeing the rendered view of the Markdown code block on a platform (likely GitHub or a similar viewer) which displays the file structure nicely using those special characters (│, ├──, └──). That rendered view often has a "Copy to clipboard" button added by the platform itself.
 
-## Available Scripts
+What you need to paste into GitHub is the raw text source code that creates that rendered view. The raw source text includes those special characters within a code block defined by triple backticks (```).
 
-In the project directory, you can run:
+Here is the complete raw Markdown source code again. The section you screenshotted (Repository Structure) is included within this larger block exactly as it needs to be written in the source file.
 
-### `npm start`
+Copy everything between the lines with the triple backticks (```) below:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# The Future of Harveston: Predicting Nature's Shifts 🌦️ 🌱 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+![Data Crunch Competition](https://img.shields.io/badge/Data%20Crunch-Competition-blue)
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
+![XGBoost](https://img.shields.io/badge/XGBoost-Implemented-green)
+![LightGBM](https://img.shields.io/badge/LightGBM-Implemented-green)
 
-### `npm test`
+## 🏆 Competition Overview
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This repository contains our solution for the "Future of Harveston" challenge in the Data Crunch competition organized by CodeJam and CSE UOM. Our team, XForce, developed an effective prediction system for environmental variables.
 
-### `npm run build`
+The competition required predicting multiple environmental variables for Harveston, a fictional land with diverse kingdoms and changing climate patterns. Our solution leverages advanced feature engineering and tailored modeling approaches for each target variable.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📊 Problem Description
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+In Harveston, a fictional self-sufficient land of sprawling fields and winding rivers, the climate patterns are changing. The competition task was to predict five critical environmental variables:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Average Temperature (°C)
+- Radiation (W/m²)
+- Rain Amount (mm)
+- Wind Speed (km/h)
+- Wind Direction (°)
 
-### `npm run eject`
+These predictions will help Harveston's farmers plan for planting and harvesting, improving resource management and preparing for weather extremes.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🔍 Our Approach
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+We implemented a methodical approach to tackle this complex forecasting challenge:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. **Data Exploration & Analysis**
+   - Comprehensive analysis of historical weather patterns
+   - Kingdom-specific weather characteristic identification
+   - Seasonal pattern recognition
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. **Feature Engineering**
+   - Cyclical encoding of temporal features (month, day)
+   - Kingdom-specific statistical features
+   - Seasonal indicator variables
 
-## Learn More
+3. **Specialized Modeling Strategy**
+   - Customized models for each target variable:
+     - **Temperature**: Optimized prediction at 25°C
+     - **Radiation**: XGBoost with moderate complexity
+     - **Rain Amount**: LightGBM with constraints to prevent extreme values
+     - **Wind Speed**: XGBoost with tailored parameters
+     - **Wind Direction**: Ridge Regression with appropriate range constraints
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+4. **Iterative Refinement**
+   - Progressive improvement of predictions through multiple submissions
+   - Careful constraint application to prevent unrealistic predictions
+   - Continuous improvement through model tuning
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📁 Repository Structure
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+/Data_Crunch_079
+│── Notebooks_and_Scripts/
+│ ├── data_exploration.py # Initial data analysis
+│ ├── model_training.py # Base model development
+│ ├── simple_predictions.py # Simplified approach
+│ ├── winning_solution.py # Final optimized solution
+│── final_submission.csv # Competition submission file
+│── technical_report.pdf # Detailed methodology report
+│── README.md # This file
 
-### Analyzing the Bundle Size
+## 🚀 Running the Code
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Prerequisites
 
-### Making a Progressive Web App
+To run our solution, you'll need:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Python 3.9+
+- Required libraries:
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+IGNORE_WHEN_COPYING_END
 
-### Advanced Configuration
+pip install pandas numpy scikit-learn xgboost lightgbm matplotlib seaborn
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Execution Steps
 
-### Deployment
+1. **Download the Data**
+ - Place `train.csv`, `test.csv`, and `sample_submission.csv` in the main directory
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+2. **Run the Scripts in Order**
+ ```bash
+ # First, explore the data
+ python Notebooks_and_Scripts/data_exploration.py
+ 
+ # Train the base models
+ python Notebooks_and_Scripts/model_training.py
+ 
+ # Generate predictions with simplified approach
+ python Notebooks_and_Scripts/simple_predictions.py
+ 
+ # Generate final optimized predictions
+ python Notebooks_and_Scripts/winning_solution.py
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+IGNORE_WHEN_COPYING_END
 
-### `npm run build` fails to minify
+Examine Results
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The final predictions will be saved as final_submission.csv
+
+Visualizations will be stored in the plots directory
+
+🔑 Key Insights
+
+Our journey to improving our predictions yielded several valuable insights:
+
+Temperature Precision: Constraining temperature predictions to an optimal value was crucial
+
+Kingdom Patterns: Each kingdom had distinct climate characteristics that needed separate modeling
+
+Rain Challenge: Precipitation remained the most difficult variable to predict accurately
+
+Model Simplicity: Simpler models with good constraints outperformed complex ensembles
+
+Feature Quality: Well-engineered features were more important than model complexity
+
+🤝 Team XForce
+
+Thanks to all team members who contributed to this solution!
+
+📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+**Explanation:**
+
+1.  The heading `## 📁 Repository Structure` tells GitHub to make a heading.
+2.  The lines ``` (triple backticks) start and end a **code block**.
+3.  **Everything inside** those ``` lines (including `/Data_Crunch_079`, `│── Notebooks_and_Scripts/`, `│    ├── data_exploration.py ...`, etc.) is treated as **pre-formatted plain text**.
+4.  When you paste this whole block into GitHub's editor for a `.md` file, GitHub reads the ```, knows it's a code block, and then displays the text inside it exactly as written, preserving the spacing and the special `│ ├ ─ └` characters, making it look like the tree in your screenshot. The "Copy to clipboard" button is added *by GitHub* when it displays that code block.
+
+Just copy the entire block above and paste it. That **is** the code you need.
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+IGNORE_WHEN_COPYING_END
