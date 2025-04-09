@@ -1,24 +1,49 @@
-import React, { useState, useEffect } from 'react';
+// src/components/Portfolio.js - Fixed with backgrounds restored
+import React, { useState, useEffect, lazy, Suspense, useMemo, memo, useCallback } from 'react';
 import { Github, Linkedin, Mail, ChevronDown } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
-import ParticleBackground from './ParticleBackground';
-import ProjectCard from './ProjectCard';
-import SkillCard from './SkillCard';
 import ContactItem from './ContactItem';
 import Navigation from './Navigation';
-import CertificationCard from './CertificationCard';
-import AwardCard from './AwardCard';
 
-// Import images directly
-import univoteSystemMain from '../Images/univote-system-main.jpg';
-import univoteEnclosureSide from '../Images/univote-enclosure-side.jpg';
-import comicPortalDashboard from '../Images/Screenshot 2025-03-12 121034.png';
-import comicPortalAdmin from '../Images/Screenshot 2025-03-12 121142.png';
-import weGoJimDashboard from '../Images/Screenshot 2025-03-19 224031.png';
-import weGoJimWorkout from '../Images/Screenshot 2025-03-19 224050.png';
-import portfolioScreenshot from '../Images/Screenshot 2025-03-19 230047.png';
-import fabricCertificate from '../Images/MeharaRanawaka_MS_FabricAnalytics_Cert_page-0001.jpg';
-import iasslPoster from '../Images/Case study participation (1).pdf-30_page-0001.jpg';
+// Lazy load heavier components
+const ParticleBackground = lazy(() => import('./ParticleBackground'));
+const ProjectCard = lazy(() => import('./ProjectCard'));
+const SkillCard = lazy(() => import('./SkillCard'));
+const CertificationCard = lazy(() => import('./CertificationCard'));
+const AwardCard = lazy(() => import('./AwardCard'));
+
+// Import images only when needed using dynamic imports
+const imageCache = {};
+const loadImage = async (path) => {
+  if (!imageCache[path]) {
+    try {
+      // Handle both direct imports and dynamic imports
+      if (typeof path === 'string') {
+        const module = await import(`../Images/${path}`);
+        imageCache[path] = module.default;
+      } else {
+        // If it's already imported elsewhere
+        imageCache[path] = path;
+      }
+    } catch (error) {
+      console.error(`Failed to load image: ${path}`, error);
+      imageCache[path] = '/placeholder.jpg'; // Fallback
+    }
+  }
+  return imageCache[path];
+};
+
+// Preload critical images
+setTimeout(() => {
+  // Preload only the first couple of images
+  loadImage('univote-system-main.jpg');
+  loadImage('portfolioScreenshot.png');
+}, 1000);
+
+// Placeholder while lazy components are loading
+const LoadingPlaceholder = () => (
+  <div className="w-full h-40 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg"></div>
+);
 
 // Define data outside component to avoid recreation on each render
 const NAVIGATION = [
@@ -53,7 +78,7 @@ const AWARDS = [
     issuer: "IASSL (Institute of Applied Statistics Sri Lanka)",
     date: "December 2024",
     description: "Finalist in the IASSL National Poster Competition at the International Statistics Conference 2024. Our team, 'XForce,' developed a fraud detection model using an Explainable Boosting Machine (EBM) and SHAP values. This model accurately predicts fraudulent activities while providing transparent explanations for its decisions, enhancing interpretability and trust. Key skills demonstrated include data preprocessing, feature engineering, machine learning model development, and performance evaluation.",
-    image: iasslPoster,
+    image: 'Case study participation (1).pdf-30_page-0001.jpg',
     demoUrl: "https://fraud-detect-xforce.netlify.app/"
   }
 ];
@@ -65,7 +90,7 @@ const CERTIFICATIONS = [
     issuer: "Microsoft",
     date: "March 2025",
     description: "Demonstrates a strong understanding of data analytics principles and practical skills in leveraging Microsoft Fabric. Experienced in building and managing data warehouses, lakehouses, and semantic models. Proven ability to prepare, enrich, and secure data for analysis, contributing to data-driven decision-making. Proficient in querying and analyzing data using SQL, KQL, and DAX.",
-    image: fabricCertificate,
+    image: 'MeharaRanawaka_MS_FabricAnalytics_Cert_page-0001.jpg',
     credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/MeharaRothila-5036/D2E29134FC45690E?sharingId=F212EF1C880154AE"
   }
 ];
@@ -85,7 +110,7 @@ const PROJECTS = [
     ],
     images: [
       {
-        src: portfolioScreenshot,
+        src: 'Screenshot 2025-03-19 230047.png',
         alt: "Portfolio Website Screenshot"
       }
     ],
@@ -106,11 +131,11 @@ const PROJECTS = [
     ],
     images: [
       {
-        src: univoteSystemMain,
+        src: 'univote-system-main.jpg',
         alt: "UNIVOTE System Main View"
       },
       {
-        src: univoteEnclosureSide,
+        src: 'univote-enclosure-side.jpg',
         alt: "UNIVOTE Enclosure Side View"
       }
     ],
@@ -130,11 +155,11 @@ const PROJECTS = [
     ],
     images: [
       {
-        src: comicPortalDashboard,
+        src: 'Screenshot 2025-03-12 121034.png',
         alt: "Comic Portal Dashboard"
       },
       {
-        src: comicPortalAdmin,
+        src: 'Screenshot 2025-03-12 121142.png',
         alt: "Comic Portal Admin Interface"
       }
     ],
@@ -154,11 +179,11 @@ const PROJECTS = [
     ],
     images: [
       {
-        src: weGoJimDashboard,
+        src: 'Screenshot 2025-03-19 224031.png',
         alt: "WE GO JIM Dashboard"
       },
       {
-        src: weGoJimWorkout,
+        src: 'Screenshot 2025-03-19 224050.png',
         alt: "WE GO JIM Workout Interface"
       }
     ],
@@ -166,10 +191,14 @@ const PROJECTS = [
   }
 ];
 
-// Reusable section component
-const Section = ({ id, title, children, includeParticles = false }) => (
+// Memoized Section Component
+const Section = memo(({ id, title, children, includeParticles = false }) => (
   <section id={id} className={`py-20 ${includeParticles ? 'relative overflow-hidden' : ''}`}>
-    {includeParticles && <ParticleBackground />}
+    {includeParticles && (
+      <Suspense fallback={<div className="absolute inset-0 bg-gray-800/20 dark:bg-gray-900/20"></div>}>
+        <ParticleBackground nodeCount={35} />
+      </Suspense>
+    )}
     <div className="max-w-7xl mx-auto px-4 relative z-10">
       <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
         {title}
@@ -177,25 +206,119 @@ const Section = ({ id, title, children, includeParticles = false }) => (
       {children}
     </div>
   </section>
-);
+));
 
+// Main Portfolio Component
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [darkMode, setDarkMode] = useState(false);
+  const [loadedImages, setLoadedImages] = useState({});
+  const [isScrolling, setIsScrolling] = useState(false);
 
+  // Toggle dark mode
   const toggleDarkMode = () => setDarkMode(!darkMode);
 
+  // Apply dark mode class
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
-  const renderSocialLink = (href, Icon) => (
+  // Memoize social links renderer
+  const renderSocialLink = useCallback((href, Icon) => (
     <a href={href}
        className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transform hover:scale-110 transition-all duration-200">
       <Icon size={24} />
     </a>
-  );
+  ), []);
+
+  // Load images on demand with intersection observer
+  useEffect(() => {
+    // Skip on server-side
+    if (typeof window === 'undefined') return;
+
+    // Create observer for image loading
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        // When section is visible
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id;
+          
+          // Load relevant images based on section
+          if (sectionId === 'projects') {
+            PROJECTS.forEach(project => {
+              if (project.images) {
+                project.images.forEach(image => {
+                  loadImage(image.src).then(img => {
+                    setLoadedImages(prev => ({
+                      ...prev,
+                      [image.src]: img
+                    }));
+                  });
+                });
+              }
+            });
+          } else if (sectionId === 'certifications') {
+            CERTIFICATIONS.forEach(cert => {
+              loadImage(cert.image).then(img => {
+                setLoadedImages(prev => ({
+                  ...prev,
+                  [cert.image]: img
+                }));
+              });
+            });
+          } else if (sectionId === 'awards') {
+            AWARDS.forEach(award => {
+              loadImage(award.image).then(img => {
+                setLoadedImages(prev => ({
+                  ...prev,
+                  [award.image]: img
+                }));
+              });
+            });
+          }
+          
+          // Unobserve once loaded
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '200px 0px' });
+    
+    // Observe sections
+    document.querySelectorAll('section').forEach(section => {
+      observer.observe(section);
+    });
+    
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // Optimize scroll performance
+  useEffect(() => {
+    let scrollTimer;
+    
+    const handleScroll = () => {
+      if (!isScrolling) {
+        setIsScrolling(true);
+      }
+      
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        setIsScrolling(false);
+      }, 150);
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimer);
+    };
+  }, [isScrolling]);
+
+  // Get an image from loaded cache or display placeholder
+  const getImage = (src) => loadedImages[src] || src;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -213,7 +336,9 @@ const Portfolio = () => {
 
       {/* Hero Section */}
       <section id="home" className="relative pt-32 pb-20 px-4 overflow-hidden">
-        <ParticleBackground />
+        <Suspense fallback={<div className="absolute inset-0 bg-gray-800/20 dark:bg-gray-900/20"></div>}>
+          <ParticleBackground nodeCount={50} />
+        </Suspense>
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-6 animate-slide-up">
             Mehara Rothila Ranawaka
@@ -250,15 +375,16 @@ const Portfolio = () => {
         </div>
       </Section>
 
-      {/* Skills Section */}
+      {/* Skills Section - RESTORED PARTICLES */}
       <Section id="skills" title="Skills" includeParticles={true}>
         <div className="grid md:grid-cols-3 gap-8">
           {SKILLS.map((skillGroup) => (
-            <SkillCard 
-              key={skillGroup.category}
-              category={skillGroup.category}
-              items={skillGroup.items}
-            />
+            <Suspense key={skillGroup.category} fallback={<LoadingPlaceholder />}>
+              <SkillCard 
+                category={skillGroup.category}
+                items={skillGroup.items}
+              />
+            </Suspense>
           ))}
         </div>
       </Section>
@@ -267,7 +393,15 @@ const Portfolio = () => {
       <Section id="awards" title="Honors & Awards">
         <div className="grid gap-8">
           {AWARDS.map(award => (
-            <AwardCard key={award.id} award={award} />
+            <Suspense key={award.id} fallback={<LoadingPlaceholder />}>
+              <AwardCard 
+                key={award.id} 
+                award={{
+                  ...award,
+                  image: getImage(award.image)
+                }} 
+              />
+            </Suspense>
           ))}
         </div>
       </Section>
@@ -276,7 +410,15 @@ const Portfolio = () => {
       <Section id="certifications" title="Certifications">
         <div className="grid gap-8">
           {CERTIFICATIONS.map(certification => (
-            <CertificationCard key={certification.id} certification={certification} />
+            <Suspense key={certification.id} fallback={<LoadingPlaceholder />}>
+              <CertificationCard 
+                key={certification.id} 
+                certification={{
+                  ...certification,
+                  image: getImage(certification.image)
+                }} 
+              />
+            </Suspense>
           ))}
         </div>
       </Section>
@@ -285,12 +427,23 @@ const Portfolio = () => {
       <Section id="projects" title="Projects">
         <div className="grid gap-8">
           {PROJECTS.map(project => (
-            <ProjectCard key={project.id} project={project} />
+            <Suspense key={project.id} fallback={<LoadingPlaceholder />}>
+              <ProjectCard 
+                key={project.id} 
+                project={{
+                  ...project,
+                  images: project.images ? project.images.map(img => ({
+                    ...img,
+                    src: getImage(img.src)
+                  })) : null
+                }} 
+              />
+            </Suspense>
           ))}
         </div>
       </Section>
 
-      {/* Contact Section */}
+      {/* Contact Section - RESTORED PARTICLES */}
       <Section id="contact" title="Get In Touch" includeParticles={true}>
         <div className="max-w-xl mx-auto">
           <div className="backdrop-blur-md bg-white/90 dark:bg-gray-800/90 p-8 rounded-xl shadow-lg dark:shadow-gray-800 hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
@@ -326,5 +479,9 @@ const Portfolio = () => {
     </div>
   );
 };
+
+// For debugging and memoization
+Section.displayName = 'Section';
+Portfolio.displayName = 'Portfolio';
 
 export default Portfolio;
