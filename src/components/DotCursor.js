@@ -1,5 +1,5 @@
 // NeonPulseCursor.js
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react'; // Removed React default import
 
 const NeonPulseCursor = () => {
   const cursorRef = useRef(null);
