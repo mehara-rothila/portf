@@ -1,5 +1,5 @@
 // src/components/Portfolio.js - Fixed with backgrounds restored
-import React, { useState, useEffect, lazy, Suspense, useMemo, memo, useCallback } from 'react';
+import React, { useState, useEffect, lazy, Suspense, memo, useCallback } from 'react'; // Removed useMemo
 import { Github, Linkedin, Mail, ChevronDown } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import ContactItem from './ContactItem';
