@@ -310,3 +310,49 @@ button:hover,
 html {
   scroll-behavior: smooth;
 }
+
+/* Add these to your index.css or App.css file */
+
+/* Force cursor to be hidden on all elements */
+html, body, * {
+  cursor: none !important;
+}
+
+/* Ensure the cursor has the correct z-index */
+.fixed.pointer-events-none.z-50 {
+  z-index: 9999 !important; /* Make sure cursor dot is on top */
+}
+
+.fixed.pointer-events-none.z-49 {
+  z-index: 9998 !important; /* Make sure pulse is on top */
+}
+
+.fixed.pointer-events-none.z-48 {
+  z-index: 9997 !important; /* Make sure outer ring is on top */
+}
+
+/* Add positioning class for better mouse tracking */
+.fixed {
+  position: fixed !important;
+  will-change: transform, opacity;
+}
+
+/* Apply to interactive elements */
+.interactive-card, 
+.certificate-container,
+.cursor-pointer,
+button,
+a,
+input,
+[role="button"] {
+  cursor: none !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Only use auto cursor on mobile/touch devices */
+@media (hover: none) {
+  html, body, * {
+    cursor: auto !important;
+  }
+}

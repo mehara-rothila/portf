@@ -1,4 +1,4 @@
-// src/components/AwardCard.js
+// src/components/AwardCard.js - Updated to support 4:3 portrait photos
 import React, { useState } from 'react';
 import { Award, ExternalLink } from 'lucide-react';
 import ImageModal from './ImageModal';
@@ -7,9 +7,13 @@ const AwardCard = ({ award }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { title, issuer, date, description, image, demoUrl } = award;
 
+  // Determine if image is portrait (4:3) or landscape based on filename
+  // This is a simple way to handle it without having to load the image first
+  const isPortrait = image.includes('coderush');
+
   return (
     <>
-      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 interactive-card cursor-pointer">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
           <div className="flex items-center space-x-2">
             <Award className="text-primary-500" size={24} />
@@ -27,14 +31,14 @@ const AwardCard = ({ award }) => {
         <div className="flex flex-col md:flex-row gap-8">
           {/* Award Image */}
           <div className="md:w-1/2">
-            <div className="relative group cursor-pointer certificate-container" onClick={() => setIsModalOpen(true)}>
+            <div className="relative group cursor-pointer certificate-container interactive-card" onClick={() => setIsModalOpen(true)}>
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-              <div className="relative w-full h-96 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
+              <div className={`relative w-full ${isPortrait ? 'h-auto aspect-[4/3]' : 'h-96'} rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800`}>
                 <img
                   src={image}
                   alt={title}
-                  className="w-auto h-full mx-auto object-contain hover:scale-105 transition-transform duration-300 select-none"
-                  style={{ maxHeight: '100%', maxWidth: '100%' }}
+                  className={`${isPortrait ? 'w-full h-full object-cover' : 'w-auto h-full mx-auto object-contain'} hover:scale-105 transition-transform duration-300 select-none`}
+                  style={isPortrait ? {} : { maxHeight: '100%', maxWidth: '100%' }}
                   onContextMenu={(e) => e.preventDefault()}
                   draggable="false"
                 />
@@ -51,13 +55,13 @@ const AwardCard = ({ award }) => {
           <div className="md:w-1/2">
             <p className="text-gray-600 dark:text-gray-300 mb-6">{description}</p>
 
-            {demoUrl && (
+            {demoUrl && demoUrl.length > 0 && (
               <div className="flex flex-wrap">
                 <a
                   href={demoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200 group"
+                  className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200 group interactive-card cursor-pointer"
                 >
                   <ExternalLink className="mr-2 group-hover:scale-110 transition-transform duration-200" size={20} />
                   <span className="border-b border-primary-500 border-opacity-0 group-hover:border-opacity-100 transition-all duration-200">

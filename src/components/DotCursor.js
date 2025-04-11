@@ -1,5 +1,5 @@
-// NeonPulseCursor.js
-import { useState, useEffect, useRef, useCallback } from 'react'; // Removed React default import
+// src/components/DotCursor.js - With enhanced hover detection
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 const NeonPulseCursor = () => {
   const cursorRef = useRef(null);
@@ -154,8 +154,87 @@ const NeonPulseCursor = () => {
     }
   };
   
+  // Check if the mouse is over an element that should trigger hover effects
+  const checkElementHover = useCallback((x, y) => {
+    // Get element at current cursor position
+    const element = document.elementFromPoint(x, y);
+    if (!element) return false;
+    
+    // Check if it's a hoverable element or within one
+    const isHoverable = (el) => {
+      if (!el) return false;
+      
+      // Check direct class matches
+      if (el.classList.contains('interactive-card') || 
+          el.classList.contains('certificate-container') ||
+          el.classList.contains('bg-white') ||
+          el.classList.contains('dark:bg-gray-800') ||
+          el.classList.contains('cursor-pointer') ||
+          el.classList.contains('rounded-lg')) {
+        return true;
+      }
+      
+      // Check tag matches
+      if (el.tagName === 'BUTTON' || 
+          el.tagName === 'A' || 
+          el.tagName === 'INPUT' ||
+          el.getAttribute('role') === 'button') {
+        return true;
+      }
+      
+      // Check if it's within a card (check parents up to 5 levels)
+      let parent = el.parentElement;
+      let depth = 0;
+      while (parent && depth < 5) {
+        if (parent.classList.contains('bg-white') || 
+            parent.classList.contains('dark:bg-gray-800') ||
+            parent.classList.contains('shadow-lg') ||
+            parent.classList.contains('rounded-lg') ||
+            parent.classList.contains('interactive-card') ||
+            parent.classList.contains('certificate-container')) {
+          return true;
+        }
+        parent = parent.parentElement;
+        depth++;
+      }
+      
+      return false;
+    };
+    
+    // Check if it's a link
+    const isLink = (el) => {
+      if (!el) return false;
+      
+      // Check direct tag
+      if (el.tagName === 'A') return true;
+      
+      // Check parent (might be a link with nested elements)
+      let parent = el.parentElement;
+      let depth = 0;
+      while (parent && depth < 3) {
+        if (parent.tagName === 'A') return true;
+        parent = parent.parentElement;
+        depth++;
+      }
+      
+      return false;
+    };
+    
+    // Set hover states
+    isHoveringRef.current = isHoverable(element);
+    isLinkRef.current = isLink(element);
+    
+    return isHoveringRef.current;
+  }, []);
+  
   const handleMouseMove = useCallback((e) => {
-    positionRef.current = { x: e.clientX, y: e.clientY };
+    const x = e.clientX;
+    const y = e.clientY;
+    
+    positionRef.current = { x, y };
+    
+    // Check for hoverable elements directly
+    checkElementHover(x, y);
     
     if (!visibleRef.current) {
       visibleRef.current = true;
@@ -164,7 +243,7 @@ const NeonPulseCursor = () => {
       if (outerRingRef.current) outerRingRef.current.style.opacity = '0.6';
       if (trailCanvasRef.current) trailCanvasRef.current.style.opacity = '1';
     }
-  }, []);
+  }, [checkElementHover]);
   
   // Check if device is mobile
   useEffect(() => {
@@ -278,36 +357,6 @@ const NeonPulseCursor = () => {
       }
     });
     
-    // Handle hoverable elements
-    const handleElementHover = () => {
-      isHoveringRef.current = true;
-    };
-    
-    const handleElementLeave = () => {
-      isHoveringRef.current = false;
-    };
-    
-    const handleLinkHover = () => {
-      isLinkRef.current = true;
-    };
-    
-    const handleLinkLeave = () => {
-      isLinkRef.current = false;
-    };
-    
-    const hoverableElements = document.querySelectorAll('button, input, [role="button"]');
-    const linkElements = document.querySelectorAll('a');
-    
-    hoverableElements.forEach(element => {
-      element.addEventListener('mouseenter', handleElementHover);
-      element.addEventListener('mouseleave', handleElementLeave);
-    });
-    
-    linkElements.forEach(element => {
-      element.addEventListener('mouseenter', handleLinkHover);
-      element.addEventListener('mouseleave', handleLinkLeave);
-    });
-    
     // Add keyframes for animations
     const style = document.createElement('style');
     style.innerHTML = `
@@ -360,16 +409,6 @@ const NeonPulseCursor = () => {
         visibleRef.current = true;
       });
       document.removeEventListener('mousedown', () => {});
-      
-      hoverableElements.forEach(element => {
-        element.removeEventListener('mouseenter', handleElementHover);
-        element.removeEventListener('mouseleave', handleElementLeave);
-      });
-      
-      linkElements.forEach(element => {
-        element.removeEventListener('mouseenter', handleLinkHover);
-        element.removeEventListener('mouseleave', handleLinkLeave);
-      });
       
       // Remove cursor elements
       [cursorRef.current, pulseRef.current, outerRingRef.current, trailCanvasRef.current].forEach(el => {

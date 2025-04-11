@@ -1,9 +1,10 @@
-// src/components/Portfolio.js - Fixed with backgrounds restored
-import React, { useState, useEffect, lazy, Suspense, memo, useCallback } from 'react'; // Removed useMemo
+// src/components/Portfolio.js - Complete version with performance mode toggle
+import React, { useState, useEffect, lazy, Suspense, memo, useCallback } from 'react';
 import { Github, Linkedin, Mail, ChevronDown } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import ContactItem from './ContactItem';
 import Navigation from './Navigation';
+import NeonPulseCursor from './DotCursor';
 
 // Lazy load heavier components
 const ParticleBackground = lazy(() => import('./ParticleBackground'));
@@ -80,6 +81,15 @@ const AWARDS = [
     description: "Finalist in the IASSL National Poster Competition at the International Statistics Conference 2024. Our team, 'XForce,' developed a fraud detection model using an Explainable Boosting Machine (EBM) and SHAP values. This model accurately predicts fraudulent activities while providing transparent explanations for its decisions, enhancing interpretability and trust. Key skills demonstrated include data preprocessing, feature engineering, machine learning model development, and performance evaluation.",
     image: 'Case study participation (1).pdf-30_page-0001.jpg',
     demoUrl: "https://fraud-detect-xforce.netlify.app/"
+  },
+  {
+    id: 2,
+    title: "2nd Place - FIT CodeRush 2024",
+    issuer: "INTECS (Information Technology Society), University of Moratuwa",
+    date: "November 2024",
+    description: "Secured 2nd place in CodeRush 2024, the annual intra-faculty hackathon organized by INTECS at the Faculty of Information Technology, University of Moratuwa. The competition featured intense coding sessions, innovative problem-solving, and technical demonstrations, bringing together talented developers from across the faculty. This achievement demonstrates strong coding skills, creative problem-solving abilities, and effective teamwork under time constraints.",
+    image: 'coderush.jpg',
+    demoUrl: ""
   }
 ];
 
@@ -191,12 +201,15 @@ const PROJECTS = [
   }
 ];
 
-// Memoized Section Component
-const Section = memo(({ id, title, children, includeParticles = false }) => (
+// Memoized Section Component - updated with performanceMode prop
+const Section = memo(({ id, title, children, includeParticles = false, performanceMode = false }) => (
   <section id={id} className={`py-20 ${includeParticles ? 'relative overflow-hidden' : ''}`}>
     {includeParticles && (
       <Suspense fallback={<div className="absolute inset-0 bg-gray-800/20 dark:bg-gray-900/20"></div>}>
-        <ParticleBackground nodeCount={35} />
+        <ParticleBackground 
+          nodeCount={performanceMode ? 15 : 35} 
+          performanceMode={performanceMode} 
+        />
       </Suspense>
     )}
     <div className="max-w-7xl mx-auto px-4 relative z-10">
@@ -215,14 +228,38 @@ const Portfolio = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [loadedImages, setLoadedImages] = useState({});
   const [isScrolling, setIsScrolling] = useState(false);
+  const [performanceMode, setPerformanceMode] = useState(false); // Added performance mode state
 
   // Toggle dark mode
   const toggleDarkMode = () => setDarkMode(!darkMode);
+  
+  // Toggle performance mode
+  const togglePerformanceMode = useCallback(() => {
+    setPerformanceMode(prevMode => !prevMode);
+    // Save preference to localStorage
+    localStorage.setItem('performanceMode', String(!performanceMode));
+  }, [performanceMode]);
 
   // Apply dark mode class
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
+  
+  // Load performance mode from localStorage
+  useEffect(() => {
+    const savedMode = localStorage.getItem('performanceMode');
+    if (savedMode !== null) {
+      setPerformanceMode(savedMode === 'true');
+    } else {
+      // Auto-enable performance mode on mobile or low-end devices
+      const shouldUsePerformanceMode = 
+        window.innerWidth < 768 || 
+        (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      setPerformanceMode(shouldUsePerformanceMode);
+    }
+  }, []);
 
   // Memoize social links renderer
   const renderSocialLink = useCallback((href, Icon) => (
@@ -322,22 +359,30 @@ const Portfolio = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      {/* Add the cursor component here */}
+      <NeonPulseCursor />
+      
       {/* Theme Toggle */}
       <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
 
-      {/* Navigation */}
+      {/* Navigation - with performance mode toggle */}
       <Navigation 
         navigation={NAVIGATION} 
         activeSection={activeSection} 
         setActiveSection={setActiveSection}
         isMenuOpen={isMenuOpen}
         setIsMenuOpen={setIsMenuOpen}
+        performanceMode={performanceMode}
+        togglePerformanceMode={togglePerformanceMode}
       />
 
-      {/* Hero Section */}
+      {/* Hero Section - with performance mode */}
       <section id="home" className="relative pt-32 pb-20 px-4 overflow-hidden">
         <Suspense fallback={<div className="absolute inset-0 bg-gray-800/20 dark:bg-gray-900/20"></div>}>
-          <ParticleBackground nodeCount={50} />
+          <ParticleBackground 
+            nodeCount={performanceMode ? 20 : 50} 
+            performanceMode={performanceMode}
+          />
         </Suspense>
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-6 animate-slide-up">
@@ -375,8 +420,8 @@ const Portfolio = () => {
         </div>
       </Section>
 
-      {/* Skills Section - RESTORED PARTICLES */}
-      <Section id="skills" title="Skills" includeParticles={true}>
+      {/* Skills Section - with performance mode */}
+      <Section id="skills" title="Skills" includeParticles={true} performanceMode={performanceMode}>
         <div className="grid md:grid-cols-3 gap-8">
           {SKILLS.map((skillGroup) => (
             <Suspense key={skillGroup.category} fallback={<LoadingPlaceholder />}>
@@ -443,8 +488,8 @@ const Portfolio = () => {
         </div>
       </Section>
 
-      {/* Contact Section - RESTORED PARTICLES */}
-      <Section id="contact" title="Get In Touch" includeParticles={true}>
+      {/* Contact Section - with performance mode */}
+      <Section id="contact" title="Get In Touch" includeParticles={true} performanceMode={performanceMode}>
         <div className="max-w-xl mx-auto">
           <div className="backdrop-blur-md bg-white/90 dark:bg-gray-800/90 p-8 rounded-xl shadow-lg dark:shadow-gray-800 hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
             <div className="space-y-6">

@@ -1,13 +1,16 @@
 // src/components/Navigation.js
 import React from 'react';
 import { Menu, X } from 'lucide-react';
+import PerformanceNavButton from './PerformanceNavButton';
 
 const Navigation = ({ 
   navigation, 
   activeSection, 
   setActiveSection, 
   isMenuOpen, 
-  setIsMenuOpen 
+  setIsMenuOpen,
+  performanceMode,
+  togglePerformanceMode
 }) => {
   return (
     <nav className="fixed top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm dark:shadow-gray-800 z-50 transition-all duration-300">
@@ -18,7 +21,7 @@ const Navigation = ({
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-4">
             {navigation.map((item) => (
               <a
                 key={item.name}
@@ -33,6 +36,13 @@ const Navigation = ({
                 {item.name}
               </a>
             ))}
+            
+            {/* Performance Mode Toggle */}
+            <div className="border-l border-gray-300 dark:border-gray-700 h-6 mx-2"></div>
+            <PerformanceNavButton 
+              performanceMode={performanceMode}
+              togglePerformanceMode={togglePerformanceMode}
+            />
           </div>
 
           {/* Mobile menu button */}
@@ -64,6 +74,14 @@ const Navigation = ({
                 {item.name}
               </a>
             ))}
+            
+            {/* Performance Mode Toggle for Mobile */}
+            <div className="border-t border-gray-300 dark:border-gray-700 my-2 pt-2">
+              <PerformanceNavButton 
+                performanceMode={performanceMode}
+                togglePerformanceMode={togglePerformanceMode}
+              />
+            </div>
           </div>
         </div>
       )}

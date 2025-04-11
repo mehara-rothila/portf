@@ -1,4 +1,4 @@
-// src/components/ProjectCard.js - Optimized for performance
+// src/components/ProjectCard.js - Updated with cursor hover classes
 import React, { useState, memo, useCallback } from 'react';
 import { Github, ExternalLink } from 'lucide-react';
 import ImageModal from './ImageModal';
@@ -31,7 +31,7 @@ const ProjectCard = memo(({ project }) => {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200 group interactive-card"
+        className="inline-flex items-center text-primary-500 hover:text-primary-400 transition-colors duration-200 group interactive-card cursor-pointer"
       >
         {React.cloneElement(icon, { className: "mr-2 group-hover:scale-110 transition-transform duration-200", size: 20 })}
         <span className="border-b border-primary-500 border-opacity-0 group-hover:border-opacity-100 transition-all duration-200">
@@ -44,7 +44,7 @@ const ProjectCard = memo(({ project }) => {
   // Simple project card (for projects without images)
   if (!images) {
     return (
-      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 interactive-card">
+      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 interactive-card cursor-pointer">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
           <h3 className="text-xl font-semibold text-primary-500">{title}</h3>
           <span className="text-sm bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full inline-flex self-start">
@@ -65,7 +65,7 @@ const ProjectCard = memo(({ project }) => {
   // Advanced project card (with images and features) - optimized with fewer DOM elements
   return (
     <>
-      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 interactive-card will-change-transform">
+      <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 interactive-card cursor-pointer will-change-transform">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
           <h3 className="text-xl font-semibold text-primary-500">{title}</h3>
           <span className="text-sm bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full inline-flex self-start">
@@ -84,7 +84,7 @@ const ProjectCard = memo(({ project }) => {
                 {images.map((image, index) => (
                   <div 
                     key={index} 
-                    className="relative group cursor-pointer interactive-card" 
+                    className="relative group cursor-pointer interactive-card certificate-container" 
                     onClick={() => openImageModal(image.src, image.alt)}
                   >
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg blur opacity-30 group-hover:opacity-50 transition duration-300"></div>

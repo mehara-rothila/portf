@@ -1,8 +1,11 @@
-// src/components/ImageModal.js
+// src/components/ImageModal.js - Updated to better handle portrait images
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
 
 const ImageModal = ({ image, alt, isOpen, onClose }) => {
+  // Determine if image is portrait (4:3) based on filename
+  const isPortrait = image && typeof image === 'string' && image.includes('coderush');
+
   // Prevent scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -64,8 +67,8 @@ const ImageModal = ({ image, alt, isOpen, onClose }) => {
           <img 
             src={image} 
             alt={alt} 
-            className="w-full h-full object-contain animate-scale-in select-none max-h-[85vh]"
-            style={{ objectFit: 'contain', maxHeight: '85vh' }}
+            className={`w-full h-full object-contain animate-scale-in select-none ${isPortrait ? 'max-h-[90vh] max-w-[80vw]' : 'max-h-[85vh]'}`}
+            style={isPortrait ? { objectFit: 'contain' } : { objectFit: 'contain', maxHeight: '85vh' }}
             onContextMenu={handleContextMenu}
             onDragStart={(e) => e.preventDefault()}
           />
