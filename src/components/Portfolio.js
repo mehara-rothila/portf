@@ -75,7 +75,7 @@ const SKILLS = [
 const AWARDS = [
   {
     id: 1,
-    title: "Finalist! IASSL National Poster Competition",
+    title: "Finalist - IASSL National Poster Competition",
     issuer: "IASSL (Institute of Applied Statistics Sri Lanka)",
     date: "December 2024",
     description: "Finalist in the IASSL National Poster Competition at the International Statistics Conference 2024. Our team, 'XForce,' developed a fraud detection model using an Explainable Boosting Machine (EBM) and SHAP values. This model accurately predicts fraudulent activities while providing transparent explanations for its decisions, enhancing interpretability and trust. Key skills demonstrated include data preprocessing, feature engineering, machine learning model development, and performance evaluation.",
@@ -89,6 +89,33 @@ const AWARDS = [
     date: "November 2024",
     description: "Secured 2nd place in CodeRush 2024, the annual intra-faculty hackathon organized by INTECS at the Faculty of Information Technology, University of Moratuwa. The competition featured intense coding sessions, innovative problem-solving, and technical demonstrations, bringing together talented developers from across the faculty. This achievement demonstrates strong coding skills, creative problem-solving abilities, and effective teamwork under time constraints.",
     image: 'coderush.jpg',
+    demoUrl: ""
+  },
+  {
+    id: 3,
+    title: "Top 10 Finalist - SpiritX 2025",
+    issuer: "MoraSpirit 360",
+    date: "April 2025",
+    description: "Selected among numerous teams to advance as a Top 10 finalist in SpiritX 2025, an inter-university development competition organized by MoraSpirit 360. Led Team Xforce through the intensive Stage 1 (Xcelerate) 36-hour hackathon, successfully developing two web-based solutions: 'SecureConnect' - a secure gateway login system, and 'Spirit11' - an inter-university fantasy cricket game. Currently competing in Stage 2 (ImagineX) to develop comprehensive solutions for real-world industry problems.",
+    image: 'spiritx-logo.jpg',
+    demoUrl: "https://lnkd.in/gj3ar9Te"
+  },
+  {
+    id: 4,
+    title: "Finalist - Data Crunch (CodeJam 2025)",
+    issuer: "Department of Computer Science & Engineering (CSE), University of Moratuwa",
+    date: "May 2025",
+    description: "Selected as a finalist in the Data Crunch track of CodeJam 2025, a prestigious competition organized by the Department of Computer Science & Engineering at the University of Moratuwa as part of their 40th anniversary celebrations. As part of Team Xforce (Data_Crunch_079), developed sophisticated machine learning models for forecasting critical environmental variables to support agricultural planning in Harveston. The solution featured innovative approaches including cyclical temporal encoding, trigonometric decomposition for wind direction forecasting, and kingdom-specific calibration factors for rainfall prediction.",
+    image: 'data-crunch.jpg',
+    demoUrl: ""
+  },
+  {
+    id: 5,
+    title: "Finalist - CodeX (CodeJam 2025)",
+    issuer: "Department of Computer Science & Engineering (CSE), University of Moratuwa",
+    date: "May 2025",
+    description: "Selected as a finalist in the CodeX track of CodeJam 2025, a prestigious competition organized by the Department of Computer Science & Engineering at the University of Moratuwa. Advanced through multiple challenging rounds including a 2-hour algorithmic coding challenge and a 6-hour open-source GitHub project contribution phase. Demonstrated strong technical abilities in data structures, algorithms, problem-solving, and collaborative development within a fast-paced environment.",
+    image: 'codex.jpg',
     demoUrl: ""
   }
 ];
@@ -198,6 +225,27 @@ const PROJECTS = [
       }
     ],
     githubUrl: "https://github.com/mehara-rothila/we-go-jim"
+  },
+  {
+    id: 5,
+    title: "Harveston Climate Forecasting System",
+    period: "May 2025",
+    description: "A sophisticated weather prediction system developed for the Data Crunch competition of CodeJam 2025. The project focuses on accurate forecasting of environmental variables for agricultural planning and sustainability.",
+    features: [
+      "Advanced ensemble modeling for multiple weather variables",
+      "Kingdom-specific calibration for localized predictions",
+      "Innovative trigonometric decomposition for wind direction forecasting",
+      "Cyclical temporal encoding for seasonal pattern recognition",
+      "Interactive visualization dashboard for agricultural planning"
+    ],
+    images: [
+      {
+        src: 'harveston.jpg',
+        alt: "Harveston Climate Forecasting System"
+      }
+    ],
+    githubUrl: "https://github.com/mehara-rothila/Data_Crunch_079",
+    liveUrl: ""
   }
 ];
 
