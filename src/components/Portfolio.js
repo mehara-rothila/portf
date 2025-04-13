@@ -85,7 +85,7 @@ const AWARDS = [
   {
     id: 2,
     title: "2nd Place - FIT CodeRush 2024",
-    issuer: "INTECS (Information Technology Society), University of Moratuwa",
+    issuer: "INTECS, University of Moratuwa",
     date: "November 2024",
     description: "Secured 2nd place in CodeRush 2024, the annual intra-faculty hackathon organized by INTECS at the Faculty of Information Technology, University of Moratuwa. The competition featured intense coding sessions, innovative problem-solving, and technical demonstrations, bringing together talented developers from across the faculty. This achievement demonstrates strong coding skills, creative problem-solving abilities, and effective teamwork under time constraints.",
     image: 'coderush.jpg',
